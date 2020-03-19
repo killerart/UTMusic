@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+	<title>UTMusic | @ViewBag.Title</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	@Styles.Render("~/bundles/css")
+
+	@if (IsSectionDefined("Styles"))
+	{
+		@RenderSection("Styles", required: false);
+	}
+</head>
+<body class="stylish-color">
+	<header>
+		@Html.Partial("_HeaderPartial")
+	</header>
+
+	<main>
+		@RenderBody()
+	</main>
+
+	@Scripts.Render("~/bundles/js")
+	@Scripts.Render("~/bundles/myPlayer/js")
+
+	@if (IsSectionDefined("Scripts"))
+	{
+		@RenderSection("Scripts", required: false)
+	}
+</body>
+</html>
