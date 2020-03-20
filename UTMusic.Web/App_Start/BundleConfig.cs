@@ -6,7 +6,7 @@ using System.Web.Optimization;
 
 namespace UTMusic.Web.App_Start
 {
-    public static class BundlesConfig
+    public static class BundleConfig
     {
         public static void RegisterBundles(BundleCollection bundles)
         {

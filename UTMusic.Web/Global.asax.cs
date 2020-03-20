@@ -18,7 +18,7 @@ namespace UTMusic.Web
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            App_Start.BundlesConfig.RegisterBundles(BundleTable.Bundles);
+            App_Start.BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
     }
 }
