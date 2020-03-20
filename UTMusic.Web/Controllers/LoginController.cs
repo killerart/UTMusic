@@ -22,7 +22,7 @@ namespace UTMusic.Web.Controllers
         {
             return View();
         }
-        public ActionResult Index(UserLoginData userLoginData)
+        /*public ActionResult Index(UserLoginData userLoginData)
         {
             UserSessionData userSessionData = new UserSessionData
             {
@@ -31,6 +31,6 @@ namespace UTMusic.Web.Controllers
                 SessionDate = DateTime.Now
             };
             return View();
-        } 
+        } */
     }
 }
