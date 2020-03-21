@@ -12,25 +12,9 @@ namespace UTMusic.Web.Controllers
 {
     public class LoginController : Controller
     {
-        public readonly ISession session; 
-        public LoginController()
-        {
-            var bl = new BusinessLogic.BusinessLogic();
-            session = bl.GetSessionBL();
-        }
         public ActionResult Index()
         {
             return View();
         }
-        /*public ActionResult Index(UserLoginData userLoginData)
-        {
-            UserSessionData userSessionData = new UserSessionData
-            {
-                Name = userLoginData.Name,
-                Password = userLoginData.Password,
-                SessionDate = DateTime.Now
-            };
-            return View();
-        } */
     }
 }

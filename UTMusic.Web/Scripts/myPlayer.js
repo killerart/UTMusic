@@ -20,55 +20,9 @@ jQuery(function ($) {
         // initialize playlist and controls
         var index = 0,
             playing = false,
-            mediaPath = 'Music/',
+            mediaPath = '/Music/',
             extension = '',
-            tracks = [{
-                "track": 1,
-                "name": "Metallica - Nothing Else Matters (1991)",
-                "duration": "6:28",
-                "file": "Metallica - Nothing Else Matters (1991)"
-            }, {
-                "track": 2,
-                "name": "ACDC - Back in Black",
-                "duration": "4:14",
-                "file": "ACDC - Back in Black"
-            }, {
-                "track": 3,
-                "name": "ACDC - Hell's Bells",
-                "duration": "4:49",
-                "file": "ACDC - Hell's Bells"
-            }, {
-                "track": 4,
-                "name": "Arctic Monkeys - Do I Wanna Know",
-                "duration": "4:33",
-                "file": "Arctic Monkeys - Do I Wanna Know"
-            }, {
-                "track": 5,
-                "name": "Deep Purple - Smoke on the Water",
-                "duration": "5:42",
-                "file": "Deep Purple - Smoke on the Water"
-            }, {
-                "track": 6,
-                "name": "Kaleo - Way Down We Go",
-                "duration": "3:39",
-                "file": "Kaleo - Way Down We Go"
-            }],
-            buildPlaylist = $.each(tracks, function (key, value) {
-                var trackNumber = value.track,
-                    trackName = value.name,
-                    trackDuration = value.duration;
-                if (trackNumber.toString().length === 1) {
-                    trackNumber = '0' + trackNumber;
-                }
-                $('#plList').append('<li> \
-                    <div class="plItem"> \
-                        <span class="plNum">' +/* + trackNumber +  */'</span> \
-                        <span class="plTitle">' + trackName + '</span> \
-                        <span class="plLength">' + trackDuration + '</span> \
-                    </div> \
-                </li>');
-            }),
-            trackCount = tracks.length,
+            trackCount = $('#plList').children.length,
             npAction = $('#npAction'),
             npTitle = $('#npTitle'),
             audio = $('#audio1').on('play', function () {
@@ -124,9 +78,10 @@ jQuery(function ($) {
             loadTrack = function (id) {
                 $('.plSel').removeClass('plSel');
                 $('#plList li:eq(' + id + ')').addClass('plSel');
-                npTitle.text(tracks[id].name);
+                var temp = $('#plList li:eq(' + id + ') .plTitle').text();
+                npTitle.text(temp);
                 index = id;
-                audio.src = mediaPath + tracks[id].file + extension;
+                audio.src = mediaPath + temp + extension;
                 updateDownload(id, audio.src);
             },
             updateDownload = function (id, source) {
@@ -140,10 +95,5 @@ jQuery(function ($) {
             };
         extension = audio.canPlayType('audio/mpeg') ? '.mp3' : audio.canPlayType('audio/ogg') ? '.ogg' : '';
         loadTrack(index);
-    } else {
-        // no audio support
-        $('.column').addClass('hidden');
-        var noSupport = $('#audio1').text();
-        $('.container').append('<p class="no-support">' + noSupport + '</p>');
     }
 });

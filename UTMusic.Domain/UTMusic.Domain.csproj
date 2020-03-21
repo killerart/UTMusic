@@ -43,10 +43,9 @@
   <ItemGroup>
     <Compile Include="Entities\General\ResponseMessage.cs" />
     <Compile Include="Entities\User\UserSessionData.cs" />
+    <Compile Include="Enums\Genres.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

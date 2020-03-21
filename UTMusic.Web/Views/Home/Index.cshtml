@@ -27,7 +27,18 @@
 						</div>
 					</form>
 					<div id="plwrap">
-						<ul id="plList"></ul>
+						<ul id="plList">
+							@foreach (var song in ViewBag.Songs)
+							{
+								<li>
+									<div class="plItem">
+										<span class="plNum"></span>
+										<span class="plTitle">@Html.Raw(song.Author + " - " + song.Name)</span>
+										@*<span class="plLength">@Html.Raw(song.Duration.Minutes+":"+song.Duration.Seconds)</span>*@
+									</div>
+								</li>
+							}
+						</ul>
 					</div>
 				</div>
 			</div>
