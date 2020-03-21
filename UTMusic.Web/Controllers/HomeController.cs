@@ -14,8 +14,7 @@ namespace UTMusic.Web.Controllers
         public ActionResult Index()
         {
             IEnumerable<Song> songs = db.Songs;
-            ViewBag.Songs = songs;
-            return View();
+            return View(songs);
         }
     }
 }
