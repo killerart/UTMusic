@@ -21,7 +21,7 @@ jQuery(function ($) {
         var index = 0,
             playing = false,
             mediaPath = '/Music/',
-            extension = '',
+            extension = '.mp3',
             trackCount = $('#plList').children.length,
             npAction = $('#npAction'),
             npTitle = $('#npTitle'),
@@ -93,7 +93,6 @@ jQuery(function ($) {
                 loadTrack(id);
                 audio.play();
             };
-        extension = audio.canPlayType('audio/mpeg') ? '.mp3' : audio.canPlayType('audio/ogg') ? '.ogg' : '';
         loadTrack(index);
     }
 });

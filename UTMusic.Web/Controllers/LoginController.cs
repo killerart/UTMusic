@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using UTMusic.BusinessLogic;
-using UTMusic.BusinessLogic.Interfaces;
-using UTMusic.Domain.Entities.User;
 using UTMusic.Web.Models;
 
 namespace UTMusic.Web.Controllers

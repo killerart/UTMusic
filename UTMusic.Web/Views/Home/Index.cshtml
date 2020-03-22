@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Song>
+﻿@model SongListModel
+@using UTMusic.Data.Entities
 @{
 	ViewBag.Title = "Home";
 }
@@ -27,15 +28,20 @@
 								   placeholder="Поиск" aria-label="Search">
 						</div>
 					</form>
+					@using (Html.BeginForm("Add", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+					{
+						<input type="file" id="fileToUpload" name="file" />
+						<input type="submit" id="btnSubmit" value="Upload" />
+					}
 					<div id="plwrap">
 						<ul id="plList">
-							@foreach (var song in Model)
+							@foreach (var song in Model.Songs)
 							{
 								<li>
 									<div class="plItem">
 										<span class="plNum"></span>
-										<span class="plTitle">@Html.Raw(song.Author + " - " + song.Name)</span>
-										@*<span class="plLength">@Html.Raw(song.Duration.Minutes+":"+song.Duration.Seconds)</span>*@
+										<span class="plTitle">@song.Name</span>
+										<span class="plLength">@Html.Raw(song.Duration.Minute + ":" + song.Duration.Second)</span>
 									</div>
 								</li>
 							}

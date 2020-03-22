@@ -58,18 +58,21 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="JavaScriptEngineSwitcher.Core, Version=3.1.0.0, Culture=neutral, PublicKeyToken=c608b2a8cc9e4472, processorArchitecture=MSIL">
-      <HintPath>..\packages\JavaScriptEngineSwitcher.Core.3.1.0\lib\net45\JavaScriptEngineSwitcher.Core.dll</HintPath>
+    <Reference Include="JavaScriptEngineSwitcher.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c608b2a8cc9e4472, processorArchitecture=MSIL">
+      <HintPath>..\packages\JavaScriptEngineSwitcher.Core.3.3.0\lib\net45\JavaScriptEngineSwitcher.Core.dll</HintPath>
     </Reference>
     <Reference Include="JSPool, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2fc7775f73072640, processorArchitecture=MSIL">
       <HintPath>..\packages\JSPool.4.0.0\lib\net45\JSPool.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebHelpers.3.2.7\lib\net45\Microsoft.Web.Helpers.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="React.Core, Version=5.1.0.0, Culture=neutral, PublicKeyToken=9aed67b161f7db78, processorArchitecture=MSIL">
-      <HintPath>..\packages\React.Core.5.1.2\lib\net45\React.Core.dll</HintPath>
+    <Reference Include="React.Core, Version=5.2.0.0, Culture=neutral, PublicKeyToken=9aed67b161f7db78, processorArchitecture=MSIL">
+      <HintPath>..\packages\React.Core.5.2.4\lib\net45\React.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web.DynamicData" />
@@ -93,6 +96,12 @@
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.3.2.7\lib\net45\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.3.2.7\lib\net45\WebMatrix.WebData.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +131,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\UTMusic.mdf" />
-    <Content Include="App_Data\UTMusic_log.ldf">
-      <DependentUpon>UTMusic.mdf</DependentUpon>
+    <Content Include="Music\30 Seconds To Mars - The Kill.mp3" />
+    <Content Include="Music\ACDC - Back in Black.mp3" />
+    <Content Include="Music\ACDC - Hell%27s Bells.mp3" />
+    <Content Include="Music\Arctic Monkeys - Do I Wanna Know.mp3" />
+    <Content Include="Music\Ash - Clones %28OST Star Wars Republic Commando%29.mp3" />
+    <Content Include="Music\Deep Purple - Smoke on the Water.mp3" />
+    <Content Include="Music\Kaleo - Way Down We Go.mp3" />
+    <Content Include="Music\Metallica - Nothing Else Matters %281991%29.mp3" />
+    <Content Include="App_Data\Songs.mdf" />
+    <Content Include="App_Data\Songs_log.ldf">
+      <DependentUpon>Songs.mdf</DependentUpon>
     </Content>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.css.map" />
@@ -258,12 +275,6 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Music\ACDC - Back in Black.mp3" />
-    <Content Include="Music\ACDC - Hell%27s Bells.mp3" />
-    <Content Include="Music\Arctic Monkeys - Do I Wanna Know.mp3" />
-    <Content Include="Music\Deep Purple - Smoke on the Water.mp3" />
-    <Content Include="Music\Kaleo - Way Down We Go.mp3" />
-    <Content Include="Music\Metallica - Nothing Else Matters %281991%29.mp3" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -432,9 +443,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Song.cs" />
-    <Compile Include="Models\SongContext.cs" />
-    <Compile Include="Models\SongDbInitializer.cs" />
+    <Compile Include="Models\SongListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -475,9 +484,9 @@
       <Project>{6460dc50-19ca-42d5-aad4-e2cef367f7a9}</Project>
       <Name>UTMusic.BusinessLogic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UTMusic.Domain\UTMusic.Domain.csproj">
+    <ProjectReference Include="..\UTMusic.Domain\UTMusic.Data.csproj">
       <Project>{0635b965-11e2-4a8b-8797-b5accfedf7e0}</Project>
-      <Name>UTMusic.Domain</Name>
+      <Name>UTMusic.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
