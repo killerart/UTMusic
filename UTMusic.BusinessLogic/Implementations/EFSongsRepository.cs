@@ -11,35 +11,36 @@ namespace UTMusic.BusinessLogic.Implementations
 {
     public class EFSongsRepository : ISongsRepository
     {
-        private SongContext songContext;
-        public EFSongsRepository(SongContext songContext)
+        private SongContext SongContext { get; }
+
+        public EFSongsRepository(SongContext songContext = null)
         {
-            this.songContext = songContext;
+            SongContext = songContext ?? new SongContext();
         }
         public List<Song> GetAllSongs()
         {
-            return songContext.Songs.ToList();
+            return SongContext.Songs.ToList();
         }
         public Song GetSongById(int songId)
         {
-            return songContext.Songs.FirstOrDefault(song => song.Id == songId);
+            return SongContext.Songs.FirstOrDefault(song => song.Id == songId);
         }
         public Song GetSongByName(string songName)
         {
-            return songContext.Songs.FirstOrDefault(song => song.Name == songName);
+            return SongContext.Songs.FirstOrDefault(song => song.Name == songName);
         }
         public void SaveSong(Song song)
         {
             if (song.Id == 0)
-                songContext.Songs.Add(song);
+                SongContext.Songs.Add(song);
             else
-                songContext.Entry(song).State = EntityState.Modified;
-            songContext.SaveChanges();
+                SongContext.Entry(song).State = EntityState.Modified;
+            SongContext.SaveChanges();
         }
-        public void DeleteSong(Song song) {
-            songContext.Songs.Remove(song);
-            songContext.SaveChanges();
-
+        public void DeleteSong(Song song)
+        {
+            SongContext.Songs.Remove(song);
+            SongContext.SaveChanges();
         }
     }
 }

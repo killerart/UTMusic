@@ -22,7 +22,7 @@ jQuery(function ($) {
             playing = false,
             mediaPath = '/Music/',
             extension = '.mp3',
-            trackCount = $('#plList').children.length,
+            trackCount = document.getElementById('plList').children.length,
             npAction = $('#npAction'),
             npTitle = $('#npTitle'),
             audio = $('#audio1').on('play', function () {
@@ -44,7 +44,7 @@ jQuery(function ($) {
                 }
             }).get(0),
             btnPrev = $('#btnPrev').on('click', function () {
-                if ((index - 1) > -1) {
+                if (index > 0) {
                     index--;
                     loadTrack(index);
                     if (playing) {
@@ -52,12 +52,12 @@ jQuery(function ($) {
                     }
                 } else {
                     audio.pause();
-                    index = 0;
+                    /*index = 0;*/
                     loadTrack(index);
                 }
             }),
             btnNext = $('#btnNext').on('click', function () {
-                if ((index + 1) < trackCount) {
+                if (index < trackCount - 1) {
                     index++;
                     loadTrack(index);
                     if (playing) {

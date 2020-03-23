@@ -11,7 +11,8 @@ namespace UTMusic.Web.App_Start
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new StyleBundle("~/bundles/css")
-                .Include("~/Content/mdbootstrap/css/bootstrap.min.css",
+                .Include("~/Content/css/all.min.css",
+                "~/Content/mdbootstrap/css/bootstrap.min.css",
                 "~/Content/mdbootstrap/css/mdb.min.css",
                 "~/Content/mdbootstrap/css/style.css",
                 "~/Content/plyr.css",
