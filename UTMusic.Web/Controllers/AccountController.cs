@@ -48,7 +48,7 @@ namespace UTMusic.Web.Controllers
             if (ModelState.IsValid)
             {
                 User userByEmail = DataManager.Users.GetUserByEmail(registerModel.Email);
-                User userByName = DataManager.Users.GetUserByName(registerModel.Email);
+                User userByName = DataManager.Users.GetUserByName(registerModel.Name);
                 if (userByEmail == null && userByName == null)
                 {
                     DataManager.Users.SaveUser(
@@ -63,12 +63,12 @@ namespace UTMusic.Web.Controllers
                 }
                 if (userByEmail != null)
                 {
-                    ModelState.AddModelError("", "User with such E-Mail already exists");
+                    ModelState.AddModelError("Email", "User with such E-Mail already exists");
                     registerModel.Email = "";
                 }
                 if (userByName != null)
                 {
-                    ModelState.AddModelError("", "User with such Name already exists");
+                    ModelState.AddModelError("Name", "User with such Name already exists");
                     registerModel.Name = "";
                 }
             }
