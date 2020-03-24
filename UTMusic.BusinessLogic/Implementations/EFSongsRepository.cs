@@ -29,6 +29,10 @@ namespace UTMusic.BusinessLogic.Implementations
         {
             return SongContext.Songs.FirstOrDefault(song => song.Name == name);
         }
+        public Song GetSongByFileName(string fileName)
+        {
+            return SongContext.Songs.FirstOrDefault(song => song.FileName == fileName);
+        }
         public Song SaveSong(Song song)
         {
             if (song.Id == 0)
@@ -36,7 +40,7 @@ namespace UTMusic.BusinessLogic.Implementations
             else
                 SongContext.Entry(song).State = EntityState.Modified;
             SongContext.SaveChanges();
-            return GetSongByName(song.Name);
+            return GetSongByFileName(song.FileName);
         }
         public void DeleteSong(Song song)
         {

@@ -39,13 +39,13 @@
 					<div id="plwrap">
 						<ul id="plList">
 							@{
-								var songs = /*User.Identity.IsAuthenticated ? Model.Songs :*/ ViewBag.Songs;
+								var songs = User.Identity.IsAuthenticated && Model != null ? Model.Songs : ViewBag.Songs;
 								if (songs != null)
 								{
 									foreach (var song in songs)
 									{
 										<li>
-											<div class="plItem">
+											<div class="plItem" file="@song.FileName">
 												<span class="plNum"></span>
 												<span class="plTitle">@song.Name</span>
 												@if (User.Identity.IsAuthenticated)

@@ -10,8 +10,9 @@ namespace UTMusic.BusinessLogic.Interfaces
     public interface ISongsRepository
     {
         List<Song> GetAllSongs();
-        Song GetSongById(int songId);
-        Song GetSongByName(string songName);
+        Song GetSongById(int id);
+        Song GetSongByName(string name);
+        Song GetSongByFileName(string fileName);
         Song SaveSong(Song song);
         void DeleteSong(Song song);
     }

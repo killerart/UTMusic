@@ -78,10 +78,11 @@ jQuery(function ($) {
             loadTrack = function (id) {
                 $('.plSel').removeClass('plSel');
                 $('#plList li:eq(' + id + ')').addClass('plSel');
-                var temp = $('#plList li:eq(' + id + ') .plTitle').text();
-                npTitle.text(temp);
+                var songName = $('#plList li:eq(' + id + ') .plTitle').text();
+                npTitle.text(songName);
+                var fileName = $('#plList li:eq(' + id + ') .plItem').attr("file");
                 index = id;
-                audio.src = mediaPath + temp + extension;
+                audio.src = mediaPath + fileName + extension;
                 updateDownload(id, audio.src);
             },
             updateDownload = function (id, source) {

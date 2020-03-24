@@ -29,21 +29,25 @@ namespace UTMusic.Web.Controllers
         {
             if (file != null)
             {
-                var fileName = Path.GetFileName(file.FileName);
-                var fileSavePath = Server.MapPath("~/Music/" +
-                  fileName);
-                var songName = Path.GetFileNameWithoutExtension(file.FileName);
                 var extention = Path.GetExtension(file.FileName);
-                if (extention == ".mp3" && DataManager.Songs.GetSongByName(songName) == null)
+                if (extention == ".mp3")
                 {
-                    var song = DataManager.Songs.SaveSong(new Song { Name = songName });
+                    var songName = Path.GetFileNameWithoutExtension(file.FileName);
+                    var fileName = songName;
+                    if (DataManager.Songs.GetSongByFileName(fileName) != null)
+                    {
+                        fileName += "1";
+                    }
+                    var fileSavePath = Server.MapPath("~/Music/" +
+                      fileName + extention);
+                    var song = DataManager.Songs.SaveSong(new Song { Name = songName, FileName = fileName });
+                    file.SaveAs(fileSavePath);
                     if (User.Identity.IsAuthenticated)
                     {
                         var currentUser = DataManager.Users.GetCurrentUser(this);
                         currentUser.Songs.Add(song);
                         DataManager.Users.SaveUser(currentUser);
                     }
-                    file.SaveAs(fileSavePath);
                 }
             }
             return RedirectToAction("Index");
