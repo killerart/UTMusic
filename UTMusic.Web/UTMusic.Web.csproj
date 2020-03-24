@@ -131,6 +131,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Songs.mdf" />
+    <Content Include="App_Data\Songs_log.ldf">
+      <DependentUpon>Songs.mdf</DependentUpon>
+    </Content>
+    <Content Include="App_Data\Users.mdf" />
+    <Content Include="App_Data\Users_log.ldf">
+      <DependentUpon>Users.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\css\all.css" />
     <Content Include="Content\css\all.min.css" />
     <Content Include="Content\css\brands.css" />
@@ -1708,18 +1716,6 @@
     <Content Include="Content\webfonts\fa-brands-400.svg" />
     <Content Include="Content\webfonts\fa-regular-400.svg" />
     <Content Include="Content\webfonts\fa-solid-900.svg" />
-    <Content Include="Music\30 Seconds To Mars - The Kill.mp3" />
-    <Content Include="Music\ACDC - Back in Black.mp3" />
-    <Content Include="Music\ACDC - Hell%27s Bells.mp3" />
-    <Content Include="Music\Arctic Monkeys - Do I Wanna Know.mp3" />
-    <Content Include="Music\Ash - Clones %28OST Star Wars Republic Commando%29.mp3" />
-    <Content Include="Music\Deep Purple - Smoke on the Water.mp3" />
-    <Content Include="Music\Kaleo - Way Down We Go.mp3" />
-    <Content Include="Music\Metallica - Nothing Else Matters %281991%29.mp3" />
-    <Content Include="App_Data\Songs.mdf" />
-    <Content Include="App_Data\Songs_log.ldf">
-      <DependentUpon>Songs.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -1852,6 +1848,12 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Music\30 Seconds To Mars - The Kill.mp3" />
+    <Content Include="Music\ACDC - Back in Black.mp3" />
+    <Content Include="Music\ACDC - Hell%27s Bells.mp3" />
+    <Content Include="Music\Aerosmith - Sweet Emotion.mp3" />
+    <Content Include="Music\Alice In Chains - Rooster.mp3" />
+    <Content Include="Music\Arctic Monkeys - Do I Wanna Know.mp3" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -2021,18 +2023,22 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Users.mdf" />
+    <Content Include="Users_log.ldf">
+      <DependentUpon>Users.mdf</DependentUpon>
+    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\SongListModel.cs" />
+    <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2051,8 +2057,8 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Login\Index.cshtml" />
-    <Content Include="Views\Register\Index.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_UploadModal.cshtml" />
     <None Include="Web.Debug.config">
@@ -2077,6 +2083,10 @@
     <ProjectReference Include="..\UTMusic.Domain\UTMusic.Data.csproj">
       <Project>{0635b965-11e2-4a8b-8797-b5accfedf7e0}</Project>
       <Name>UTMusic.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UTMusic.Helpers\UTMusic.Helpers.csproj">
+      <Project>{16c495e3-e286-4c89-8a81-4664546c2877}</Project>
+      <Name>UTMusic.Helpers</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

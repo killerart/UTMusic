@@ -11,11 +11,20 @@
 		<ul class="navbar-nav ml-auto">
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-				   aria-haspopup="true" aria-expanded="false">Аккаунт</a>
+				   aria-haspopup="true" aria-expanded="false">
+					@Html.Raw(User.Identity.IsAuthenticated ? User.Identity.Name : "Account")
+				</a>
 				<div class="dropdown-menu dropdown-menu-left dropdown-menu-md-right dropdown-primary stylish-color-dark"
 					 aria-labelledby="navbarDropdownMenuLink">
-					<a class="dropdown-item d-block white-text" href="@Url.Action("Index", "Login")">Войти</a>
-					<a class="dropdown-item d-block white-text" href="@Url.Action("Index", "Register")">Создать</a>
+					@if (User.Identity.IsAuthenticated)
+					{
+						<a class="dropdown-item d-block white-text" href="@Url.Action("Logout", "Account")">Log Out</a>
+					}
+					else
+					{
+						<a class="dropdown-item d-block white-text" href="@Url.Action("Login", "Account")">Log In</a>
+						<a class="dropdown-item d-block white-text" href="@Url.Action("Register", "Account")">Register</a>
+					}
 				</div>
 			</li>
 		</ul>

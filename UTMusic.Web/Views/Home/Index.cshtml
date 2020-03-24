@@ -1,4 +1,4 @@
-﻿@model SongListModel
+﻿@model UTMusic.Data.Entities.User
 @{
 	ViewBag.Title = "Home";
 }
@@ -12,7 +12,7 @@
 					</div>
 					<div id="audiowrap">
 						<div id="audio0">
-							<audio id="audio1" preload controls>
+							<audio id="audio1" preload="auto" controls>
 								Your browser does not support HTML5 Audio!
 								😢
 							</audio>
@@ -29,28 +29,37 @@
 					</form>
 					<div class="container">
 						<div class="row justify-content-center">
-								<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#songUpload">
-									<i class="fas fa-cloud-upload-alt" aria-hidden="true">
-										Upload Song
-									</i>
-								</button>
+							<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#songUpload">
+								<i class="fas fa-cloud-upload-alt" aria-hidden="true">
+									Upload Song
+								</i>
+							</button>
 						</div>
 					</div>
 					<div id="plwrap">
 						<ul id="plList">
-							@foreach (var song in Model.Songs)
-							{
-								<li>
-									<div class="plItem">
-										<span class="plNum"></span>
-										<span class="plTitle">@song.Name</span>
-										<span class="plLength">
-											<a class="plLength" href="@Url.Action("Delete", "Home",new {@songId = song.Id})">
-												<i class="far fa-trash-alt text-white"></i>
-											</a>
-										</span>
-									</div>
-								</li>
+							@{
+								var songs = /*User.Identity.IsAuthenticated ? Model.Songs :*/ ViewBag.Songs;
+								if (songs != null)
+								{
+									foreach (var song in songs)
+									{
+										<li>
+											<div class="plItem">
+												<span class="plNum"></span>
+												<span class="plTitle">@song.Name</span>
+												@if (User.Identity.IsAuthenticated)
+												{
+													<span class="plLength">
+														<a class="plLength" href="@Url.Action("DeleteSong", "Account", new { @songId = song.Id })">
+															<i class="far fa-trash-alt text-white"></i>
+														</a>
+													</span>
+												}
+											</div>
+										</li>
+									}
+								}
 							}
 						</ul>
 					</div>
@@ -59,4 +68,4 @@
 		</div>
 	</div>
 </div>
-@Html.Partial("_UploadModal");
+@Html.Partial("_UploadModal")

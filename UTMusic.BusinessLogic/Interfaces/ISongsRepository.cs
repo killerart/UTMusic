@@ -12,7 +12,7 @@ namespace UTMusic.BusinessLogic.Interfaces
         List<Song> GetAllSongs();
         Song GetSongById(int songId);
         Song GetSongByName(string songName);
-        void SaveSong(Song song);
+        Song SaveSong(Song song);
         void DeleteSong(Song song);
     }
 }

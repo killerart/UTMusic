@@ -21,21 +21,22 @@ namespace UTMusic.BusinessLogic.Implementations
         {
             return SongContext.Songs.ToList();
         }
-        public Song GetSongById(int songId)
+        public Song GetSongById(int id)
         {
-            return SongContext.Songs.FirstOrDefault(song => song.Id == songId);
+            return SongContext.Songs.FirstOrDefault(song => song.Id == id);
         }
-        public Song GetSongByName(string songName)
+        public Song GetSongByName(string name)
         {
-            return SongContext.Songs.FirstOrDefault(song => song.Name == songName);
+            return SongContext.Songs.FirstOrDefault(song => song.Name == name);
         }
-        public void SaveSong(Song song)
+        public Song SaveSong(Song song)
         {
             if (song.Id == 0)
                 SongContext.Songs.Add(song);
             else
                 SongContext.Entry(song).State = EntityState.Modified;
             SongContext.SaveChanges();
+            return GetSongByName(song.Name);
         }
         public void DeleteSong(Song song)
         {

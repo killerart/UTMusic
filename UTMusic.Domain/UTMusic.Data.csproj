@@ -54,13 +54,20 @@
     <Compile Include="Entities\Song.cs" />
     <Compile Include="Entities\SongContext.cs" />
     <Compile Include="Entities\SongDbInitializer.cs" />
-    <Compile Include="Entities\UserLoginData.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserContext.cs" />
     <Compile Include="Enums\Genres.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UTMusic.Helpers\UTMusic.Helpers.csproj">
+      <Project>{16c495e3-e286-4c89-8a81-4664546c2877}</Project>
+      <Name>UTMusic.Helpers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

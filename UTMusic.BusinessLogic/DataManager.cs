@@ -11,9 +11,11 @@ namespace UTMusic.BusinessLogic
     public class DataManager
     {
         public ISongsRepository Songs { get; }
-        public DataManager(ISongsRepository songsRepository = null)
+        public IUsersRepository Users { get; }
+        public DataManager(ISongsRepository songsRepository = null, IUsersRepository usersRepository=null)
         {
             Songs = songsRepository ?? new EFSongsRepository();
+            Users = usersRepository ?? new EFUsersRepository();
         }
     }
 }

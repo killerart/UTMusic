@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using UTMusic.BusinessLogic;
 using UTMusic.BusinessLogic.Implementations;
 using UTMusic.BusinessLogic.Interfaces;
@@ -18,12 +19,13 @@ namespace UTMusic.Web.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            var songList = new SongListModel { Songs = DataManager.Songs.GetAllSongs() };
-            return View(songList);
+            var user = User.Identity.IsAuthenticated ? DataManager.Users.GetCurrentUser(this) : null;
+            ViewBag.Songs = DataManager.Songs.GetAllSongs();
+            return View(user);
         }
 
         [HttpPost]
-        public ActionResult Add(HttpPostedFileBase file)
+        public ActionResult UploadSong(HttpPostedFileBase file)
         {
             if (file != null)
             {
@@ -34,18 +36,16 @@ namespace UTMusic.Web.Controllers
                 var extention = Path.GetExtension(file.FileName);
                 if (extention == ".mp3" && DataManager.Songs.GetSongByName(songName) == null)
                 {
+                    var song = DataManager.Songs.SaveSong(new Song { Name = songName });
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        var currentUser = DataManager.Users.GetCurrentUser(this);
+                        currentUser.Songs.Add(song);
+                        DataManager.Users.SaveUser(currentUser);
+                    }
                     file.SaveAs(fileSavePath);
-                    DataManager.Songs.SaveSong(new Song { Name = songName });
                 }
             }
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult Delete(int songId)
-        {
-            var song = DataManager.Songs.GetSongById(songId);
-            if (song != null)
-                DataManager.Songs.DeleteSong(song);
             return RedirectToAction("Index");
         }
     }
