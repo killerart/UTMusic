@@ -9,8 +9,14 @@ using UTMusic.Data.Entities;
 
 namespace UTMusic.BusinessLogic.Implementations
 {
+    /// <summary>
+    /// Реализация репозитория песен через Entity Framework
+    /// </summary>
     public class EFSongsRepository : ISongsRepository
     {
+        /// <summary>
+        /// Контекст базы данных с песнями
+        /// </summary>
         private SongContext SongContext { get; }
 
         public EFSongsRepository(SongContext songContext = null)

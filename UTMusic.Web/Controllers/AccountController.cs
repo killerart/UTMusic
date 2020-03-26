@@ -12,15 +12,34 @@ namespace UTMusic.Web.Controllers
 {
     public class AccountController : Controller
     {
+        /// <summary>
+        /// Менеджер репозиториев
+        /// </summary>
         private DataManager DataManager { get; } = new DataManager();
+        /// <summary>
+        /// Действие страницы логина
+        /// </summary>
+        /// <returns>Страница регистрации</returns>
         public ActionResult Login()
         {
             return View();
         }
+        /// <summary>
+        /// Действие страницы регистрации
+        /// </summary>
+        /// <returns>Страница регистрации</returns>
         public ActionResult Register()
         {
             return View();
         }
+        /// <summary>
+        /// Обработка формы логина
+        /// </summary>
+        /// <param name="loginModel">Данные о логине, передаваемые из формы</param>
+        /// <returns>
+        /// Главная страница, если логин - успешный
+        /// Страница логина, если данные логина неверные
+        /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginModel loginModel)
@@ -38,9 +57,16 @@ namespace UTMusic.Web.Controllers
                 }
                 ModelState.AddModelError("", "Incorrect login data");
             }
-            loginModel.Password = "";
             return View(loginModel);
         }
+        /// <summary>
+        /// Обработка формы регистрации
+        /// </summary>
+        /// <param name="registerModel">Данные о регистрации, передаваемые из формы</param>
+        /// <returns>
+        /// Страница логина, если регистрация успешная
+        /// Страница регистрации, если данные для регистрации уже заняты
+        /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Register(RegisterModel registerModel)
@@ -64,32 +90,41 @@ namespace UTMusic.Web.Controllers
                 if (userByEmail != null)
                 {
                     ModelState.AddModelError("Email", "User with such E-Mail already exists");
-                    registerModel.Email = "";
                 }
                 if (userByName != null)
                 {
                     ModelState.AddModelError("Name", "User with such Name already exists");
-                    registerModel.Name = "";
                 }
             }
             return View(registerModel);
         }
+        /// <summary>
+        /// Действие выхода из аккаунта
+        /// </summary>
+        /// <returns>Главная страница</returns>
         [Authorize]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
         }
+        /// <summary>
+        /// Удаление песни
+        /// </summary>
+        /// <param name="songId">Id песни, которую надо удалить</param>
+        /// <returns>Главна страница</returns>
         [Authorize]
         public ActionResult DeleteSong(int songId)
         {
             var song = DataManager.Songs.GetSongById(songId);
             if (song != null)
             {
-                /*var currentUser = DataManager.Users.GetCurrentUser(this);
-                currentUser?.Songs.Remove(song);
-                DataManager.Users.SaveUser(currentUser);*/
-                DataManager.Songs.DeleteSong(song);
+                var currentUser = DataManager.Users.GetCurrentUser(this);
+                if (currentUser != null)
+                {
+                    currentUser.Songs.Remove(song);
+                    DataManager.Users.SaveUser(currentUser);
+                }
             }
             return RedirectToAction("Index", "Home");
         }

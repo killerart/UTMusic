@@ -10,6 +10,9 @@ using UTMusic.Data.Entities;
 
 namespace UTMusic.BusinessLogic.Implementations
 {
+    /// <summary>
+    /// Реализация репозитория пользователей через Entity Framework
+    /// </summary>
     public class EFUsersRepository : IUsersRepository
     {
         private UserContext UserContext { get; }
@@ -20,6 +23,10 @@ namespace UTMusic.BusinessLogic.Implementations
         public List<User> GetAllUsers()
         {
             return UserContext.Users.ToList();
+        }
+        public User GetCurrentUser(Controller controller)
+        {
+            return controller.User.Identity.IsAuthenticated ? GetUserByName(controller.User.Identity.Name) : null;
         }
         public User GetUserById(int id)
         {
@@ -47,11 +54,6 @@ namespace UTMusic.BusinessLogic.Implementations
         {
             UserContext.Users.Remove(user);
             UserContext.SaveChanges();
-        }
-
-        public User GetCurrentUser(Controller controller)
-        {
-            return GetUserByName(controller.User.Identity.Name);
         }
     }
 }

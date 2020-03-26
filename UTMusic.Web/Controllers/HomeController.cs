@@ -15,15 +15,25 @@ namespace UTMusic.Web.Controllers
 {
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Менеджер репозиториев
+        /// </summary>
         private DataManager DataManager { get; } = new DataManager();
-        // GET: Home
+        /// <summary>
+        /// Действие главной страницы
+        /// </summary>
+        /// <returns>Главная страница</returns>
         public ActionResult Index()
         {
-            var user = User.Identity.IsAuthenticated ? DataManager.Users.GetCurrentUser(this) : null;
+            var user = DataManager.Users.GetCurrentUser(this);
             ViewBag.Songs = DataManager.Songs.GetAllSongs();
             return View(user);
         }
-
+        /// <summary>
+        /// Загрузка песни на сайт
+        /// </summary>
+        /// <param name="file">Файл с песней в формате .mp3</param>
+        /// <returns>Главная страница</returns>
         [HttpPost]
         public ActionResult UploadSong(HttpPostedFileBase file)
         {
@@ -42,9 +52,9 @@ namespace UTMusic.Web.Controllers
                       fileName + extention);
                     var song = DataManager.Songs.SaveSong(new Song { Name = songName, FileName = fileName });
                     file.SaveAs(fileSavePath);
-                    if (User.Identity.IsAuthenticated)
+                    var currentUser = DataManager.Users.GetCurrentUser(this);
+                    if (currentUser != null)
                     {
-                        var currentUser = DataManager.Users.GetCurrentUser(this);
                         currentUser.Songs.Add(song);
                         DataManager.Users.SaveUser(currentUser);
                     }

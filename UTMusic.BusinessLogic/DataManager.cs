@@ -8,6 +8,9 @@ using UTMusic.BusinessLogic.Interfaces;
 
 namespace UTMusic.BusinessLogic
 {
+    /// <summary>
+    /// Менеджер репозиториев
+    /// </summary>
     public class DataManager
     {
         public ISongsRepository Songs { get; }
