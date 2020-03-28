@@ -1840,12 +1840,6 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Music\30 Seconds To Mars - The Kill.mp3" />
-    <Content Include="Music\ACDC - Back in Black.mp3" />
-    <Content Include="Music\ACDC - Hell%27s Bells.mp3" />
-    <Content Include="Music\Aerosmith - Sweet Emotion.mp3" />
-    <Content Include="Music\Alice In Chains - Rooster.mp3" />
-    <Content Include="Music\Arctic Monkeys - Do I Wanna Know.mp3" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -2015,10 +2009,6 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
-    <Content Include="Users.mdf" />
-    <Content Include="Users_log.ldf">
-      <DependentUpon>Users.mdf</DependentUpon>
-    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -2062,6 +2052,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Music\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

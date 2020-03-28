@@ -52,9 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Song.cs" />
-    <Compile Include="Entities\SongContext.cs" />
+    <Compile Include="Entities\MusicContext.cs" />
     <Compile Include="Entities\User.cs" />
-    <Compile Include="Entities\UserContext.cs" />
     <Compile Include="Enums\Genres.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

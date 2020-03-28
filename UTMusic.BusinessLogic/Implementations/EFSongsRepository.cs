@@ -17,41 +17,41 @@ namespace UTMusic.BusinessLogic.Implementations
         /// <summary>
         /// Контекст базы данных с песнями
         /// </summary>
-        private SongContext SongContext { get; }
+        private MusicContext MusicContext { get; }
 
-        public EFSongsRepository(SongContext songContext = null)
+        public EFSongsRepository(MusicContext songContext = null)
         {
-            SongContext = songContext ?? new SongContext();
+            MusicContext = songContext ?? new MusicContext();
         }
         public List<Song> GetAllSongs()
         {
-            return SongContext.Songs.ToList();
+            return MusicContext.Songs.ToList();
         }
         public Song GetSongById(int id)
         {
-            return SongContext.Songs.FirstOrDefault(song => song.Id == id);
+            return MusicContext.Songs.FirstOrDefault(song => song.Id == id);
         }
         public Song GetSongByName(string name)
         {
-            return SongContext.Songs.FirstOrDefault(song => song.Name == name);
+            return MusicContext.Songs.FirstOrDefault(song => song.Name == name);
         }
         public Song GetSongByFileName(string fileName)
         {
-            return SongContext.Songs.FirstOrDefault(song => song.FileName == fileName);
+            return MusicContext.Songs.FirstOrDefault(song => song.FileName == fileName);
         }
         public Song SaveSong(Song song)
         {
             if (song.Id == 0)
-                SongContext.Songs.Add(song);
+                MusicContext.Songs.Add(song);
             else
-                SongContext.Entry(song).State = EntityState.Modified;
-            SongContext.SaveChanges();
+                MusicContext.Entry(song).State = EntityState.Modified;
+            MusicContext.SaveChanges();
             return GetSongByFileName(song.FileName);
         }
         public void DeleteSong(Song song)
         {
-            SongContext.Songs.Remove(song);
-            SongContext.SaveChanges();
+            MusicContext.Songs.Remove(song);
+            MusicContext.SaveChanges();
         }
     }
 }

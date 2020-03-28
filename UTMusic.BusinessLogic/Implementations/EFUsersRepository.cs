@@ -15,14 +15,14 @@ namespace UTMusic.BusinessLogic.Implementations
     /// </summary>
     public class EFUsersRepository : IUsersRepository
     {
-        private UserContext UserContext { get; }
-        public EFUsersRepository(UserContext userContext = null)
+        private MusicContext MusicContext { get; }
+        public EFUsersRepository(MusicContext userContext = null)
         {
-            UserContext = userContext ?? new UserContext();
+            MusicContext = userContext ?? new MusicContext();
         }
         public List<User> GetAllUsers()
         {
-            return UserContext.Users.ToList();
+                return MusicContext.Users.ToList();
         }
         public User GetCurrentUser(Controller controller)
         {
@@ -30,30 +30,30 @@ namespace UTMusic.BusinessLogic.Implementations
         }
         public User GetUserById(int id)
         {
-            return UserContext.Users.FirstOrDefault(user => user.Id == id);
+            return MusicContext.Users.FirstOrDefault(user => user.Id == id);
         }
         public User GetUserByEmail(string email)
         {
-            return UserContext.Users.FirstOrDefault(user => user.Email == email);
+            return MusicContext.Users.FirstOrDefault(user => user.Email == email);
 
         }
         public User GetUserByName(string name)
         {
-            return UserContext.Users.FirstOrDefault(user => user.Name == name);
+            return MusicContext.Users.FirstOrDefault(user => user.Name == name);
         }
         public User SaveUser(User user)
         {
             if (user.Id == 0)
-                UserContext.Users.Add(user);
+                MusicContext.Users.Add(user);
             else
-                UserContext.Entry(user).State = EntityState.Modified;
-            UserContext.SaveChanges();
+                MusicContext.Entry(user).State = EntityState.Modified;
+            MusicContext.SaveChanges();
             return GetUserByName(user.Name);
         }
         public void DeleteUser(User user)
         {
-            UserContext.Users.Remove(user);
-            UserContext.SaveChanges();
+            MusicContext.Users.Remove(user);
+            MusicContext.SaveChanges();
         }
     }
 }

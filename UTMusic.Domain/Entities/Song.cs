@@ -12,8 +12,10 @@ namespace UTMusic.Data.Entities
         public string Name { get; set; }
         public string FileName { get; set; }
         public virtual ICollection<Genres> SongGenres { get; set; }
+        public virtual ICollection<User> Users { get; set; }
         public Song()
         {
+            Users = new List<User>();
             SongGenres = new List<Genres>();
         }
     }

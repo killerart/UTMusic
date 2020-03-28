@@ -22,7 +22,9 @@ namespace UTMusic.Web.Controllers
         /// <returns>Страница регистрации</returns>
         public ActionResult Login()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+            return View(new LoginModel());
         }
         /// <summary>
         /// Действие страницы регистрации
@@ -30,7 +32,9 @@ namespace UTMusic.Web.Controllers
         /// <returns>Страница регистрации</returns>
         public ActionResult Register()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+            return View(new RegisterModel());
         }
         /// <summary>
         /// Обработка формы логина
@@ -116,15 +120,12 @@ namespace UTMusic.Web.Controllers
         [Authorize]
         public ActionResult DeleteSong(int songId)
         {
-            var song = DataManager.Songs.GetSongById(songId);
-            if (song != null)
+            var currentUser = DataManager.Users.GetCurrentUser(this);
+            if (currentUser != null)
             {
-                var currentUser = DataManager.Users.GetCurrentUser(this);
-                if (currentUser != null)
-                {
-                    currentUser.Songs.Remove(song);
-                    DataManager.Users.SaveUser(currentUser);
-                }
+                var song = currentUser.Songs.FirstOrDefault(s => s.Id == songId);
+                currentUser.Songs.Remove(song);
+                DataManager.Users.SaveUser(currentUser);
             }
             return RedirectToAction("Index", "Home");
         }

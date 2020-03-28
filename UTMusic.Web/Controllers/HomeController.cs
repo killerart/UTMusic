@@ -50,14 +50,18 @@ namespace UTMusic.Web.Controllers
                     }
                     var fileSavePath = Server.MapPath("~/Music/" +
                       fileName + extention);
-                    var song = DataManager.Songs.SaveSong(new Song { Name = songName, FileName = fileName });
-                    file.SaveAs(fileSavePath);
+                    var song = new Song { Name = songName, FileName = fileName };
                     var currentUser = DataManager.Users.GetCurrentUser(this);
                     if (currentUser != null)
                     {
                         currentUser.Songs.Add(song);
                         DataManager.Users.SaveUser(currentUser);
                     }
+                    else
+                    {
+                        DataManager.Songs.SaveSong(song);
+                    }
+                    file.SaveAs(fileSavePath);
                 }
             }
             return RedirectToAction("Index");

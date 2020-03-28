@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UTMusic.BusinessLogic.Implementations;
 using UTMusic.BusinessLogic.Interfaces;
+using UTMusic.Data.Entities;
 
 namespace UTMusic.BusinessLogic
 {
@@ -13,12 +14,13 @@ namespace UTMusic.BusinessLogic
     /// </summary>
     public class DataManager
     {
+        private MusicContext MusicContext { get; }
         public ISongsRepository Songs { get; }
         public IUsersRepository Users { get; }
-        public DataManager(ISongsRepository songsRepository = null, IUsersRepository usersRepository=null)
+        public DataManager(MusicContext musicContext = null)
         {
-            Songs = songsRepository ?? new EFSongsRepository();
-            Users = usersRepository ?? new EFUsersRepository();
+            Songs = new EFSongsRepository(musicContext);
+            Users = new EFUsersRepository(musicContext);
         }
     }
 }
