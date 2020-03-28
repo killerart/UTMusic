@@ -23,11 +23,27 @@ namespace UTMusic.Web.Controllers
         /// Действие главной страницы
         /// </summary>
         /// <returns>Главная страница</returns>
+        [HttpGet]
         public ActionResult Index()
         {
-            var user = DataManager.Users.GetCurrentUser(this);
-            ViewBag.Songs = DataManager.Songs.GetAllSongs();
-            return View(user);
+            var model = new SongListModel();
+            model.UserSongs = DataManager.Users.GetCurrentUser(this)?.Songs?.AsEnumerable();
+            model.AllSongs = DataManager.Songs.GetAllSongs();
+            return View(model);
+        }
+        [HttpPost]
+        public ActionResult Index(string searchValue)
+        {
+            var model = new SongListModel();
+            model.UserSongs = DataManager.Users.GetCurrentUser(this)?.Songs?.AsEnumerable();
+            model.AllSongs = DataManager.Songs.GetAllSongs();
+
+            if (!String.IsNullOrEmpty(searchValue))
+            {
+                model.UserSongs = model.UserSongs?.Where(song => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1);
+                model.AllSongs = model.AllSongs?.Where(song => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1);
+            }
+            return View(model);
         }
         /// <summary>
         /// Загрузка песни на сайт
@@ -63,6 +79,18 @@ namespace UTMusic.Web.Controllers
                     }
                     file.SaveAs(fileSavePath);
                 }
+            }
+            return RedirectToAction("Index");
+        }
+        [Authorize]
+        public ActionResult AddSong(int songId)
+        {
+            var user = DataManager.Users.GetCurrentUser(this);
+            var song = DataManager.Songs.GetSongById(songId);
+            if (user != null && song != null)
+            {
+                user.Songs.Add(song);
+                DataManager.Users.SaveUser(user);
             }
             return RedirectToAction("Index");
         }

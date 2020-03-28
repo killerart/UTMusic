@@ -22,7 +22,7 @@ jQuery(function ($) {
             playing = false,
             mediaPath = '/Music/',
             extension = '.mp3',
-            trackCount = document.getElementById('plList').children.length,
+            trackCount = document.getElementById('plUserList').children.length + document.getElementById('plList').children.length,
             npAction = $('#npAction'),
             npTitle = $('#npTitle'),
             audio = $('#audio1').on('play', function () {
@@ -69,7 +69,13 @@ jQuery(function ($) {
                     loadTrack(index);
                 }
             }),
-            li = $('#plList li').on('click', function () {
+            plListLi = $('#plList li').on('click', function () {
+                var id = parseInt($(this).index()) + document.getElementById('plUserList').children.length;
+                if (id !== index) {
+                    playTrack(id);
+                }
+            }),
+            plUserListLi = $('#plUserList li').on('click', function () {
                 var id = parseInt($(this).index());
                 if (id !== index) {
                     playTrack(id);
@@ -77,10 +83,17 @@ jQuery(function ($) {
             }),
             loadTrack = function (id) {
                 $('.plSel').removeClass('plSel');
-                $('#plList li:eq(' + id + ')').addClass('plSel');
-                var songName = $('#plList li:eq(' + id + ') .plTitle').text();
+                var idName = "#plUserList";
+                var newId = id;
+                var userSongCount = document.getElementById('plUserList').children.length;
+                if (id >= userSongCount) {
+                    idName = "#plList";
+                    newId = id - userSongCount;
+				}
+                $(idName + ' li:eq(' + newId + ')').addClass('plSel');
+                var songName = $(idName + ' li:eq(' + newId + ') .plTitle').text();
                 npTitle.text(songName);
-                var fileName = $('#plList li:eq(' + id + ') .plItem').attr("file");
+                var fileName = $(idName + ' li:eq(' + newId + ') .plItem').attr("file");
                 index = id;
                 audio.src = mediaPath + fileName + extension;
                 updateDownload(id, audio.src);

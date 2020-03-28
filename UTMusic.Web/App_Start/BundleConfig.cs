@@ -19,6 +19,9 @@ namespace UTMusic.Web.App_Start
                 "~/Content/main.css"));
             bundles.Add(new ScriptBundle("~/bundles/js")
                 .Include("~/Content/mdbootstrap/js/jquery.min.js",
+                "~/Content/mdbootstrap/js/jquery.unobtrusive-ajax.min.js",
+                "~/Content/mdbootstrap/js/jquery.validate.min.js",
+                "~/Content/mdbootstrap/js/jquery.validate.unobtrusive.min.js",
                 "~/Content/mdbootstrap/js/popper.min.js",
                 "~/Content/mdbootstrap/js/bootstrap.min.js",
                 "~/Content/mdbootstrap/js/mdb.min.js",

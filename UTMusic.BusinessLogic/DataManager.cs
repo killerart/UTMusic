@@ -19,6 +19,7 @@ namespace UTMusic.BusinessLogic
         public IUsersRepository Users { get; }
         public DataManager(MusicContext musicContext = null)
         {
+            musicContext = musicContext ?? new MusicContext();
             Songs = new EFSongsRepository(musicContext);
             Users = new EFUsersRepository(musicContext);
         }

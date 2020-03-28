@@ -1,4 +1,4 @@
-﻿@model UTMusic.Data.Entities.User
+﻿
 @{
 	ViewBag.Title = "Home";
 }
@@ -21,12 +21,13 @@
 							<a id="btnPrev">&vltri;</a><a id="btnNext">&vrtri;</a>
 						</div>
 					</div>
-					<form class="form-inline my-md-2">
+					@using (Ajax.BeginForm("Index", "Home", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "plwrap" }, new { @class = "form-inline my-md-2" }))
+					{
 						<div class="md-form my-0 width-50 mx-auto">
-							<input class="form-control mr-sm-2 white-text width-100" type="text"
+							<input class="form-control mr-sm-2 white-text width-100" name="searchValue" type="text" id="searchSong"
 								   placeholder="Поиск" aria-label="Search">
 						</div>
-					</form>
+					}
 					<div class="container">
 						<div class="row justify-content-center">
 							<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#songUpload">
@@ -36,33 +37,7 @@
 							</button>
 						</div>
 					</div>
-					<div id="plwrap">
-						<ul id="plList">
-							@{
-								var songs = User.Identity.IsAuthenticated && Model != null ? Model.Songs : ViewBag.Songs;
-								if (songs != null)
-								{
-									foreach (var song in songs)
-									{
-										<li>
-											<div class="plItem" file="@song.FileName">
-												<span class="plNum"></span>
-												<span class="plTitle">@song.Name</span>
-												@if (User.Identity.IsAuthenticated)
-												{
-													<span class="plLength">
-														<a class="plLength" href="@Url.Action("DeleteSong", "Account", new { @songId = song.Id })">
-															<i class="far fa-trash-alt text-white"></i>
-														</a>
-													</span>
-												}
-											</div>
-										</li>
-									}
-								}
-							}
-						</ul>
-					</div>
+					@Html.Partial("_SongList")
 				</div>
 			</div>
 		</div>
