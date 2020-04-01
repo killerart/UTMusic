@@ -16,15 +16,31 @@ namespace UTMusic.Web.Controllers
         /// Менеджер репозиториев
         /// </summary>
         private DataManager DataManager { get; } = new DataManager();
+        private User LoggedUser {
+            get {
+                var user = DataManager.Users.GetCurrentUser(this);
+                if (user == null && User.Identity.IsAuthenticated)
+                    FormsAuthentication.SignOut();
+                return user;
+            }
+        }
         /// <summary>
         /// Действие страницы логина
         /// </summary>
         /// <returns>Страница регистрации</returns>
         public ActionResult Login()
         {
+            var currentUser = LoggedUser;
             if (User.Identity.IsAuthenticated)
+            {
+                if (currentUser == null)
+                {
+                    FormsAuthentication.SignOut();
+                    return RedirectToAction("Login");
+                }
                 return RedirectToAction("Index", "Home");
-            return View(new LoginModel());
+            }
+            return View(new LoginModel { CurrentUser = currentUser });
         }
         /// <summary>
         /// Действие страницы регистрации
@@ -32,9 +48,17 @@ namespace UTMusic.Web.Controllers
         /// <returns>Страница регистрации</returns>
         public ActionResult Register()
         {
+            var currentUser = LoggedUser;
             if (User.Identity.IsAuthenticated)
+            {
+                if (currentUser == null)
+                {
+                    FormsAuthentication.SignOut();
+                    return RedirectToAction("Register");
+                }
                 return RedirectToAction("Index", "Home");
-            return View(new RegisterModel());
+            }
+            return View(new RegisterModel { CurrentUser = currentUser });
         }
         /// <summary>
         /// Обработка формы логина
@@ -55,7 +79,7 @@ namespace UTMusic.Web.Controllers
                 {
                     if (user.Password == loginModel.Password)
                     {
-                        FormsAuthentication.SetAuthCookie(user.Name, loginModel.Remember);
+                        FormsAuthentication.SetAuthCookie(user.Id.ToString(), loginModel.Remember);
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -112,22 +136,6 @@ namespace UTMusic.Web.Controllers
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
         }
-        /// <summary>
-        /// Удаление песни
-        /// </summary>
-        /// <param name="songId">Id песни, которую надо удалить</param>
-        /// <returns>Главна страница</returns>
-        [Authorize]
-        public ActionResult DeleteSong(int songId)
-        {
-            var currentUser = DataManager.Users.GetCurrentUser(this);
-            if (currentUser != null)
-            {
-                var song = currentUser.Songs.FirstOrDefault(s => s.Id == songId);
-                currentUser.Songs.Remove(song);
-                DataManager.Users.SaveUser(currentUser);
-            }
-            return RedirectToAction("Index", "Home");
-        }
+
     }
 }

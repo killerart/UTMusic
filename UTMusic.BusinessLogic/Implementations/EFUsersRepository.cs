@@ -26,7 +26,14 @@ namespace UTMusic.BusinessLogic.Implementations
         }
         public User GetCurrentUser(Controller controller)
         {
-            return controller.User.Identity.IsAuthenticated ? GetUserByName(controller.User.Identity.Name) : null;
+            User user = null;
+            if (controller.User.Identity.IsAuthenticated)
+            {
+                int id = 0;
+                Int32.TryParse(controller.User.Identity.Name, out id);
+                user = GetUserById(id);
+            }
+            return user;
         }
         public User GetUserById(int id)
         {

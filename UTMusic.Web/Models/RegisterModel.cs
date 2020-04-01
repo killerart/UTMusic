@@ -5,7 +5,7 @@ using System.Web;
 
 namespace UTMusic.Web.Models
 {
-    public class RegisterModel
+    public class RegisterModel : HeaderModel
     {
         public string Email { get; set; }
         public string Name { get; set; }

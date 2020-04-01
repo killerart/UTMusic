@@ -19,6 +19,12 @@ namespace UTMusic.Web.Controllers
         /// Менеджер репозиториев
         /// </summary>
         private DataManager DataManager { get; } = new DataManager();
+        private User LoggedUser {
+            get {
+                var user = DataManager.Users.GetCurrentUser(this);
+                return user;
+            }
+        }
         /// <summary>
         /// Действие главной страницы
         /// </summary>
@@ -26,17 +32,38 @@ namespace UTMusic.Web.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var model = new SongListModel();
-            model.UserSongs = DataManager.Users.GetCurrentUser(this)?.Songs?.AsEnumerable();
-            model.AllSongs = DataManager.Songs.GetAllSongs();
+            var currentUser = LoggedUser;
+            if (currentUser == null && User.Identity.IsAuthenticated)
+            {
+                FormsAuthentication.SignOut();
+                return RedirectToAction("Index");
+            }
+            var model = new SongListModel
+            {
+                CurrentUser = currentUser,
+                UserSongs = currentUser?.GetOrderedSongs(),
+                AllSongs = DataManager.Songs.GetAllSongs()
+            };
+            model.AllSongs = model.AllSongs?.Reverse();
             return View(model);
         }
         [HttpPost]
         public ActionResult Index(string searchValue)
         {
-            var model = new SongListModel();
-            model.UserSongs = DataManager.Users.GetCurrentUser(this)?.Songs?.AsEnumerable();
-            model.AllSongs = DataManager.Songs.GetAllSongs();
+            var currentUser = LoggedUser;
+            if (currentUser == null && User.Identity.IsAuthenticated)
+            {
+                FormsAuthentication.SignOut();
+                return RedirectToAction("Index", new { searchValue });
+            }
+            var model = new SongListModel
+            {
+                CurrentUser = currentUser,
+                UserSongs = LoggedUser?.GetOrderedSongs(),
+                AllSongs = DataManager.Songs.GetAllSongs()
+            };
+
+            model.AllSongs = model.AllSongs?.Reverse();
 
             if (!String.IsNullOrEmpty(searchValue))
             {
@@ -53,6 +80,11 @@ namespace UTMusic.Web.Controllers
         [HttpPost]
         public ActionResult UploadSong(HttpPostedFileBase file)
         {
+            if (LoggedUser == null && User.Identity.IsAuthenticated)
+            {
+                FormsAuthentication.SignOut();
+                return RedirectToAction("UploadSong", new { file });
+            }
             if (file != null)
             {
                 var extention = Path.GetExtension(file.FileName);
@@ -67,10 +99,12 @@ namespace UTMusic.Web.Controllers
                     var fileSavePath = Server.MapPath("~/Music/" +
                       fileName + extention);
                     var song = new Song { Name = songName, FileName = fileName };
-                    var currentUser = DataManager.Users.GetCurrentUser(this);
+                    var currentUser = LoggedUser;
                     if (currentUser != null)
                     {
                         currentUser.Songs.Add(song);
+                        DataManager.Users.SaveUser(currentUser);
+                        currentUser.OrderOfSongs.Add(new IdNumber { SongId = DataManager.Songs.GetSongByFileName(fileName).Id });
                         DataManager.Users.SaveUser(currentUser);
                     }
                     else
@@ -85,14 +119,44 @@ namespace UTMusic.Web.Controllers
         [Authorize]
         public ActionResult AddSong(int songId)
         {
-            var user = DataManager.Users.GetCurrentUser(this);
+            var user = LoggedUser;
+            if (user == null && User.Identity.IsAuthenticated)
+            {
+                FormsAuthentication.SignOut();
+                return RedirectToAction("AddSong", new { songId });
+            }
             var song = DataManager.Songs.GetSongById(songId);
             if (user != null && song != null)
             {
                 user.Songs.Add(song);
+                user.OrderOfSongs.Add(new IdNumber { SongId = songId });
                 DataManager.Users.SaveUser(user);
             }
             return RedirectToAction("Index");
+        }
+        /// <summary>
+        /// Удаление песни
+        /// </summary>
+        /// <param name="songId">Id песни, которую надо удалить</param>
+        /// <returns>Главна страница</returns>
+        [Authorize]
+        public ActionResult DeleteSong(int songId)
+        {
+            var currentUser = LoggedUser;
+            if (currentUser == null && User.Identity.IsAuthenticated)
+            {
+                FormsAuthentication.SignOut();
+                return RedirectToAction("DeleteSong", new { songId });
+            }
+            if (currentUser != null)
+            {
+                var song = currentUser.Songs.FirstOrDefault(s => s.Id == songId);
+                currentUser.Songs.Remove(song);
+                IdNumber idNumber = currentUser.OrderOfSongs.FirstOrDefault(i => i.SongId == songId);
+                currentUser.OrderOfSongs.Remove(idNumber);
+                DataManager.Users.SaveUser(currentUser);
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }

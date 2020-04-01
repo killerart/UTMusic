@@ -5,7 +5,6 @@
 		{
 			if (Model.UserSongs != null)
 			{
-				Model.UserSongs.Reverse();
 				<h1>My Songs</h1>
 				<ul id="plUserList">
 					@foreach (var song in Model.UserSongs)
@@ -15,7 +14,7 @@
 								<span class="plNum"></span>
 								<span class="plTitle">@song.Name</span>
 								<span class="plLength">
-									<a class="plLength" href="@Url.Action("DeleteSong", "Account", new { @songId = song.Id })">
+									<a class="plLength" href="@Url.Action("DeleteSong", "Home", new { @songId = song.Id })">
 										<i class="far fa-trash-alt text-white"></i>
 									</a>
 								</span>
@@ -27,8 +26,6 @@
 		}
 		if (Model.AllSongs != null)
 		{
-
-			Model.AllSongs.Reverse();
 			<h1>All Songs</h1>
 			<ul id="plList">
 				@foreach (var song in Model.AllSongs)
@@ -42,7 +39,7 @@
 								var className = "fas fa-plus text-white";
 								var url = Url.Action("AddSong", "Home", new { @songId = song.Id });
 								var hrefName = Html.Raw($"href=\"{url}\"");
-								if (Model.UserSongs.FirstOrDefault(s => s.Id == song.Id) != null)
+								if (Model.UserSongs?.FirstOrDefault(s => s.Id == song.Id) != null)
 								{
 									className = "fas fa-check text-light";
 									hrefName = Html.Raw(String.Empty);
