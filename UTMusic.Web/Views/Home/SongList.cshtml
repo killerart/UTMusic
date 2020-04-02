@@ -1,0 +1,60 @@
+﻿@model HomePageModel
+@if (User.Identity.IsAuthenticated)
+{
+	if (Model.UserSongs != null)
+	{
+		<h1>My Songs</h1>
+		<div id="plUserList" class="container">
+			@foreach (var song in Model.UserSongs)
+			{
+				<div class="row">
+					<div class="py-3 plItem col-11" file="@song.FileName">
+						<span class="plTitle">@song.Name</span>
+					</div>
+					<div class="py-3 float-right">
+						<span class="plAction float-right">
+							@Html.Raw(Ajax.ActionLink(
+								"LinkTextToken",
+								"DeleteSong", new { @songId = song.Id },
+								new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "plwrap" }
+							).ToHtmlString().Replace("LinkTextToken", "<i class=\"far fa-trash-alt text-white\"></i>"))
+						</span>
+					</div>
+				</div>
+			}
+		</div>
+	}
+}
+@if (Model.AllSongs != null)
+{
+	<h1>All Songs</h1>
+	<div id="plList" class="container">
+		@foreach (var song in Model.AllSongs)
+		{
+			<div class="row">
+				<div class="py-3 plItem col-11" file="@song.FileName">
+					<span class="plTitle">@song.Name</span>
+				</div>
+				@if (User.Identity.IsAuthenticated)
+				{
+					var link = Ajax.ActionLink(
+							"LinkTextToken",
+							"AddSong", new { @songId = song.Id },
+							new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "plwrap" },
+							new { @class = "plLength" }
+						).ToHtmlString().Replace("LinkTextToken", "<i class=\"fas fa-plus text-white\"></i>");
+					if (Model.UserSongs?.FirstOrDefault(s => s.Id == song.Id) != null)
+					{
+						link = "<a><i class=\"fas fa-check text-light\"></i></a>";
+					}
+					<div class="py-3 float-right">
+						<span class="plAction float-right">
+							@Html.Raw(link)
+						</span>
+					</div>
+				}
+			</div>
+		}
+	</div>
+}
+@Scripts.Render("~/Scripts/myPlayer.js")

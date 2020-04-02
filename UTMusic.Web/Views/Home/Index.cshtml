@@ -1,5 +1,4 @@
-﻿@model HomePageModel
-@{
+﻿@{
 	ViewBag.Title = "Home";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -22,22 +21,11 @@
 							<a id="btnPrev">&vltri;</a><a id="btnNext">&vrtri;</a>
 						</div>
 					</div>
-					@using (Ajax.BeginForm("Index", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "searchSuccess", UpdateTargetId = "plwrap" }, new { @class = "form-inline my-md-2" }))
+					@using (Ajax.BeginForm("SearchSong", "Home", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "plwrap" }, new { @class = "form-inline my-md-2" }))
 					{
 						<div class="md-form my-0 width-50 mx-auto">
 							<input class="form-control mr-sm-2 white-text width-100" name="searchValue" type="text" id="searchSong"
 								   placeholder="Поиск" aria-label="Search">
-							@Html.EditorFor(model => model.SearchValue, new
-							{
-								htmlAttributes = new
-								{
-									id = "searchSong",
-									@class = "form-control mr-sm-2 white-text width-100",
-									@placeholder = "Поиск",
-									@type = "text",
-									@ariaLabel = "Search"
-								}
-							})
 						</div>
 					}
 					<div class="container">
@@ -51,7 +39,7 @@
 					</div>
 
 					<div id="plwrap">
-						@Html.Partial("_SongList")
+						@Html.Partial("SongList")
 					</div>
 				</div>
 			</div>
@@ -60,10 +48,7 @@
 </div>
 @Html.Partial("_UploadModal")
 
-@section Scripts{
-	<script type="text/javascript">
-		function searchSuccess(data) {
-			console.log(data);
-		}
-	</script>
+@section ScriptsInit{
+	@Scripts.Render("~/Scripts/jquery-3.4.1.min.js")
+	@Scripts.Render("~/bundles/myPlayerInit/js")
 }

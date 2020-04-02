@@ -41,7 +41,6 @@ namespace UTMusic.Web.Controllers
             }
             var model = new HomePageModel
             {
-                SearchValue = "",
                 CurrentUser = currentUser,
                 UserSongs = currentUser?.GetOrderedSongs(),
                 AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
@@ -50,7 +49,7 @@ namespace UTMusic.Web.Controllers
             return View(model);
         }
         [HttpPost]
-        public ActionResult Index(string searchValue)
+        public ActionResult SearchSong(string searchValue)
         {
             var currentUser = LoggedUser;
             if (currentUser == null && User.Identity.IsAuthenticated)
@@ -58,9 +57,9 @@ namespace UTMusic.Web.Controllers
                 FormsAuthentication.SignOut();
                 return RedirectToAction("Index", new { searchValue });
             }
+
             var model = new HomePageModel
             {
-                SearchValue = searchValue,
                 CurrentUser = currentUser,
                 UserSongs = currentUser?.GetOrderedSongs(),
                 AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
@@ -71,7 +70,7 @@ namespace UTMusic.Web.Controllers
                 model.UserSongs = model.UserSongs?.Where(song => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1);
                 model.AllSongs = model.AllSongs?.Where(song => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1);
             }
-            return PartialView(model);
+            return PartialView("SongList", model);
         }
         /// <summary>
         /// Загрузка песни на сайт
@@ -115,7 +114,13 @@ namespace UTMusic.Web.Controllers
                     file.SaveAs(fileSavePath);
                 }
             }
-            return RedirectToAction("Index");
+            var model = new HomePageModel
+            {
+                CurrentUser = currentUser,
+                UserSongs = currentUser?.GetOrderedSongs(),
+                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
+            };
+            return PartialView("SongList", model);
         }
         [Authorize]
         public ActionResult AddSong(int songId)
@@ -133,7 +138,13 @@ namespace UTMusic.Web.Controllers
                 currentUser.OrderOfSongs.Add(new IdNumber { SongId = songId });
                 DataManager.Users.SaveUser(currentUser);
             }
-            return RedirectToAction("Index");
+            var model = new HomePageModel
+            {
+                CurrentUser = currentUser,
+                UserSongs = currentUser?.GetOrderedSongs(),
+                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
+            };
+            return PartialView("SongList", model);
         }
         /// <summary>
         /// Удаление песни
@@ -157,7 +168,13 @@ namespace UTMusic.Web.Controllers
                 currentUser.OrderOfSongs.Remove(idNumber);
                 DataManager.Users.SaveUser(currentUser);
             }
-            return RedirectToAction("Index", "Home");
+            var model = new HomePageModel
+            {
+                CurrentUser = currentUser,
+                UserSongs = currentUser?.GetOrderedSongs(),
+                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
+            };
+            return PartialView("SongList", model);
         }
     }
 }

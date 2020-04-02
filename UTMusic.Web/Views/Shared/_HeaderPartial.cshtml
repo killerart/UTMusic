@@ -13,7 +13,7 @@
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
 				   aria-haspopup="true" aria-expanded="false">
-					@Html.Raw(User.Identity.IsAuthenticated ? Model.CurrentUser.Name : "Account")
+					@Html.Raw(User.Identity.IsAuthenticated ? Model.CurrentUser?.Name : "Account")
 				</a>
 				<div class="dropdown-menu dropdown-menu-left dropdown-menu-md-right dropdown-primary stylish-color-dark"
 					 aria-labelledby="navbarDropdownMenuLink">

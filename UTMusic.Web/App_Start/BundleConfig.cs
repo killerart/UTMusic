@@ -18,16 +18,18 @@ namespace UTMusic.Web.App_Start
                 "~/Content/plyr.css",
                 "~/Content/main.css"));
             bundles.Add(new ScriptBundle("~/bundles/js")
-                .Include("~/Content/mdbootstrap/js/jquery.min.js",
-                "~/Content/mdbootstrap/js/jquery.unobtrusive-ajax.min.js",
-                "~/Content/mdbootstrap/js/jquery.validate.min.js",
-                "~/Content/mdbootstrap/js/jquery.validate.unobtrusive.min.js",
+                .Include("~/Scripts/jquery-3.4.1.min.js",
+                "~/Scripts/jquery.unobtrusive-ajax.min.js",
+                "~/Scripts/jquery.validate.min.js",
+                "~/Scripts/jquery.validate.unobtrusive.min.js",
                 "~/Content/mdbootstrap/js/popper.min.js",
                 "~/Content/mdbootstrap/js/bootstrap.min.js",
                 "~/Content/mdbootstrap/js/mdb.min.js",
                 "~/Scripts/html5media.min.js",
                 "~/Scripts/plyr.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/myPlayer/js").Include("~/Scripts/myPlayer.js"));
+            bundles.Add(new ScriptBundle("~/bundles/myPlayerInit/js").Include("~/Scripts/myPlayerInit.js"));
+            bundles.Add(new ScriptBundle("~/bundles/jquery/js").Include("~/Scripts/jquery-3.4.1.min.js"));
         }
     }
 }

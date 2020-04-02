@@ -10,7 +10,11 @@
 
 	@if (IsSectionDefined("Styles"))
 	{
-		@RenderSection("Styles", required: false);
+		@RenderSection("Styles", required: false)
+	}
+	@if (IsSectionDefined("ScriptsInit"))
+	{
+		@RenderSection("ScriptsInit", required: false)
 	}
 </head>
 <body class="stylish-color">
@@ -23,7 +27,6 @@
 	</main>
 
 	@Scripts.Render("~/bundles/js")
-	@Scripts.Render("~/bundles/myPlayer/js")
 
 	@if (IsSectionDefined("Scripts"))
 	{

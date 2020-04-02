@@ -2,7 +2,7 @@
 	 aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content stylish-color">
-			@using (Html.BeginForm("UploadSong", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+			@using (Ajax.BeginForm("UploadSong", "Home", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "plwrap" }, new { enctype = "multipart/form-data" }))
 			{
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalLabel">Upload Song</h5>
@@ -14,7 +14,7 @@
 					<input class="btn btn-blue-grey" type="file" id="fileToUpload" name="file">
 				</div>
 				<div class="modal-footer justify-content-start">
-					<button class="btn btn-light" type="submit" id="btnSubmit" value="Upload">Upload</button>
+					<button class="btn btn-light" type="submit" id="btnSubmit" value="Upload" data-toggle="modal" data-target="#songUpload">Upload</button>
 				</div>
 			}
 		</div>

@@ -1964,6 +1964,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\myPlayer.js" />
+    <Content Include="Scripts\myPlayerInit.js" />
     <Content Include="Scripts\plyr.min.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
@@ -2072,7 +2073,7 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_UploadModal.cshtml" />
-    <Content Include="Views\Shared\_SongList.cshtml" />
+    <Content Include="Views\Home\SongList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
