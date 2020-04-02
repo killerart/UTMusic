@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,8 +39,9 @@ namespace UTMusic.Web.Controllers
                 FormsAuthentication.SignOut();
                 return RedirectToAction("Index");
             }
-            var model = new SongListModel
+            var model = new HomePageModel
             {
+                SearchValue = "",
                 CurrentUser = currentUser,
                 UserSongs = currentUser?.GetOrderedSongs(),
                 AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
@@ -56,8 +58,9 @@ namespace UTMusic.Web.Controllers
                 FormsAuthentication.SignOut();
                 return RedirectToAction("Index", new { searchValue });
             }
-            var model = new SongListModel
+            var model = new HomePageModel
             {
+                SearchValue = searchValue,
                 CurrentUser = currentUser,
                 UserSongs = currentUser?.GetOrderedSongs(),
                 AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
@@ -68,7 +71,7 @@ namespace UTMusic.Web.Controllers
                 model.UserSongs = model.UserSongs?.Where(song => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1);
                 model.AllSongs = model.AllSongs?.Where(song => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1);
             }
-            return View(model);
+            return PartialView(model);
         }
         /// <summary>
         /// Загрузка песни на сайт

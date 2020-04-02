@@ -1,6 +1,7 @@
-﻿
+﻿@model HomePageModel
 @{
 	ViewBag.Title = "Home";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="container-md px-md-5">
 	<div class="row">
@@ -21,11 +22,22 @@
 							<a id="btnPrev">&vltri;</a><a id="btnNext">&vrtri;</a>
 						</div>
 					</div>
-					@using (Ajax.BeginForm("Index", "Home", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "plwrap" }, new { @class = "form-inline my-md-2" }))
+					@using (Ajax.BeginForm("Index", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "searchSuccess", UpdateTargetId = "plwrap" }, new { @class = "form-inline my-md-2" }))
 					{
 						<div class="md-form my-0 width-50 mx-auto">
 							<input class="form-control mr-sm-2 white-text width-100" name="searchValue" type="text" id="searchSong"
 								   placeholder="Поиск" aria-label="Search">
+							@Html.EditorFor(model => model.SearchValue, new
+							{
+								htmlAttributes = new
+								{
+									id = "searchSong",
+									@class = "form-control mr-sm-2 white-text width-100",
+									@placeholder = "Поиск",
+									@type = "text",
+									@ariaLabel = "Search"
+								}
+							})
 						</div>
 					}
 					<div class="container">
@@ -37,10 +49,21 @@
 							</button>
 						</div>
 					</div>
-					@Html.Partial("_SongList")
+
+					<div id="plwrap">
+						@Html.Partial("_SongList")
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 @Html.Partial("_UploadModal")
+
+@section Scripts{
+	<script type="text/javascript">
+		function searchSuccess(data) {
+			console.log(data);
+		}
+	</script>
+}

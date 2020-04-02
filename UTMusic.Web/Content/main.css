@@ -178,9 +178,9 @@ audio {
 	padding: 21px 0;
 }
 
-	#plList li:hover, #plUserList li:hover {
-		background-color: rgba(0, 0, 0, .1);
-	}
+#plList li:hover, #plUserList li:hover {
+	background-color: rgba(0, 0, 0, .1);
+}
 
 #plList, #plUserList {
 	padding: 0;
@@ -216,7 +216,6 @@ audio {
 .plSel:hover {
 	background-color: rgba(0, 0, 0, .1);
 	color: #fff;
-	cursor: default !important;
 }
 
 #tracks a {

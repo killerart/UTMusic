@@ -99,12 +99,20 @@ jQuery(function ($) {
 			var id = parseInt($(this).index()) + document.getElementById('plUserList').children.length;
 			if (id !== index) {
 				playTrack(id);
+			} else if (playing) {
+				audio.pause();
+			} else {
+				audio.play();
 			}
 		})
 		$('#plUserList li').on('click', function () {
 			var id = parseInt($(this).index());
 			if (id !== index) {
 				playTrack(id);
+			} else if (playing) {
+				audio.pause();
+			} else {
+				audio.play();
 			}
 		})
 		loadTrack(index);

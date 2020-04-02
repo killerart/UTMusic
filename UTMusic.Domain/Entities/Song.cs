@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,7 +12,9 @@ namespace UTMusic.Data.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string FileName { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Genres> SongGenres { get; set; }
+        [JsonIgnore]
         public virtual ICollection<User> Users { get; set; }
         public Song()
         {
