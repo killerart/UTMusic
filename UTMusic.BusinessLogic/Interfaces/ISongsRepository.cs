@@ -16,7 +16,7 @@ namespace UTMusic.BusinessLogic.Interfaces
         /// Получить все песни из базы данных
         /// </summary>
         /// <returns>Массив List со всеми песнями</returns>
-        List<Song> GetAllSongs();
+        ICollection<Song> GetAllSongs();
         /// <summary>
         /// Найти песню по ID
         /// </summary>

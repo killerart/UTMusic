@@ -17,7 +17,7 @@ namespace UTMusic.BusinessLogic.Interfaces
         /// Получить всех пользователей из базы данных
         /// </summary>
         /// <returns>Массив List со всеми пользователями</returns>
-        List<User> GetAllUsers();
+        ICollection<User> GetAllUsers();
         /// <summary>
         /// Получить текущего залогиненного пользователя
         /// </summary>

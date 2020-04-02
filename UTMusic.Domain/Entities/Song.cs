@@ -15,8 +15,8 @@ namespace UTMusic.Data.Entities
         public virtual ICollection<User> Users { get; set; }
         public Song()
         {
-            Users = new List<User>();
-            SongGenres = new List<Genres>();
+            Users = new HashSet<User>();
+            SongGenres = new HashSet<Genres>();
         }
     }
 }

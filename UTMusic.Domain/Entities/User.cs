@@ -22,10 +22,9 @@ namespace UTMusic.Data.Entities
         public List<Song> GetOrderedSongs()
         {
             var orderedSongs = new List<Song>();
-            var orderOfSongs = OrderOfSongs.ToList();
-            for (int i = orderOfSongs.Count - 1; i >= 0; i--)
+            for (int i = OrderOfSongs.Count - 1; i >= 0; --i)
             {
-                var song = Songs.FirstOrDefault(s => s.Id == orderOfSongs[i].SongId);
+                var song = Songs.FirstOrDefault(s => s.Id == OrderOfSongs.ElementAt(i).SongId);
                 if (song != null)
                     orderedSongs.Add(song);
             }

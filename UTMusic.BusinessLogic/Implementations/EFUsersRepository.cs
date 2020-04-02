@@ -20,16 +20,16 @@ namespace UTMusic.BusinessLogic.Implementations
         {
             MusicContext = userContext ?? new MusicContext();
         }
-        public List<User> GetAllUsers()
+        public ICollection<User> GetAllUsers()
         {
-                return MusicContext.Users.ToList();
+            return MusicContext.Users.ToList();
         }
         public User GetCurrentUser(Controller controller)
         {
             User user = null;
             if (controller.User.Identity.IsAuthenticated)
             {
-                int id = 0;
+                int id;
                 Int32.TryParse(controller.User.Identity.Name, out id);
                 user = GetUserById(id);
             }

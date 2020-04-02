@@ -23,7 +23,7 @@ namespace UTMusic.BusinessLogic.Implementations
         {
             MusicContext = songContext ?? new MusicContext();
         }
-        public List<Song> GetAllSongs()
+        public ICollection<Song> GetAllSongs()
         {
             return MusicContext.Songs.ToList();
         }

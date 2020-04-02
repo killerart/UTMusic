@@ -42,9 +42,9 @@ namespace UTMusic.Web.Controllers
             {
                 CurrentUser = currentUser,
                 UserSongs = currentUser?.GetOrderedSongs(),
-                AllSongs = DataManager.Songs.GetAllSongs()
+                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
             };
-            model.AllSongs = model.AllSongs?.Reverse();
+
             return View(model);
         }
         [HttpPost]
@@ -59,11 +59,9 @@ namespace UTMusic.Web.Controllers
             var model = new SongListModel
             {
                 CurrentUser = currentUser,
-                UserSongs = LoggedUser?.GetOrderedSongs(),
-                AllSongs = DataManager.Songs.GetAllSongs()
+                UserSongs = currentUser?.GetOrderedSongs(),
+                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
             };
-
-            model.AllSongs = model.AllSongs?.Reverse();
 
             if (!String.IsNullOrEmpty(searchValue))
             {
@@ -80,7 +78,8 @@ namespace UTMusic.Web.Controllers
         [HttpPost]
         public ActionResult UploadSong(HttpPostedFileBase file)
         {
-            if (LoggedUser == null && User.Identity.IsAuthenticated)
+            var currentUser = LoggedUser;
+            if (currentUser == null && User.Identity.IsAuthenticated)
             {
                 FormsAuthentication.SignOut();
                 return RedirectToAction("UploadSong", new { file });
@@ -99,7 +98,6 @@ namespace UTMusic.Web.Controllers
                     var fileSavePath = Server.MapPath("~/Music/" +
                       fileName + extention);
                     var song = new Song { Name = songName, FileName = fileName };
-                    var currentUser = LoggedUser;
                     if (currentUser != null)
                     {
                         currentUser.Songs.Add(song);
@@ -119,18 +117,18 @@ namespace UTMusic.Web.Controllers
         [Authorize]
         public ActionResult AddSong(int songId)
         {
-            var user = LoggedUser;
-            if (user == null && User.Identity.IsAuthenticated)
+            var currentUser = LoggedUser;
+            if (currentUser == null && User.Identity.IsAuthenticated)
             {
                 FormsAuthentication.SignOut();
                 return RedirectToAction("AddSong", new { songId });
             }
             var song = DataManager.Songs.GetSongById(songId);
-            if (user != null && song != null)
+            if (currentUser != null && song != null)
             {
-                user.Songs.Add(song);
-                user.OrderOfSongs.Add(new IdNumber { SongId = songId });
-                DataManager.Users.SaveUser(user);
+                currentUser.Songs.Add(song);
+                currentUser.OrderOfSongs.Add(new IdNumber { SongId = songId });
+                DataManager.Users.SaveUser(currentUser);
             }
             return RedirectToAction("Index");
         }
