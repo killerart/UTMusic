@@ -4,8 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using UTMusic.BusinessLogic;
-using UTMusic.Data.Entities;
+using UTMusic.BusinessLogic.DataTransfer;
+using UTMusic.BusinessLogic.Infrastructure;
+using UTMusic.BusinessLogic.Interfaces;
+using UTMusic.BusinessLogic.Services;
 using UTMusic.Web.Models;
 
 namespace UTMusic.Web.Controllers
@@ -15,13 +17,12 @@ namespace UTMusic.Web.Controllers
         /// <summary>
         /// Менеджер репозиториев
         /// </summary>
-        private DataManager DataManager { get; } = new DataManager();
-        private User LoggedUser {
+        private IUserService UserService { get; } = new UserService();
+        private UserDTO LoggedUser {
             get {
-                var user = DataManager.Users.GetCurrentUser(this);
-                if (user == null && User.Identity.IsAuthenticated)
-                    FormsAuthentication.SignOut();
-                return user;
+                Int32.TryParse(User.Identity.Name, out int id);
+                var userDTO = UserService.GetUser(id);
+                return userDTO;
             }
         }
         /// <summary>
@@ -74,16 +75,15 @@ namespace UTMusic.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = DataManager.Users.GetUserByEmail(loginModel.Email);
-                if (user != null)
+                var userDTO = new UserDTO { Email = loginModel.Email, Password = loginModel.Password };
+                var authenticationResult = UserService.Authenticate(userDTO);
+                if (authenticationResult.Succedeed)
                 {
-                    if (user.Password == loginModel.Password)
-                    {
-                        FormsAuthentication.SetAuthCookie(user.Id.ToString(), loginModel.Remember);
-                        return RedirectToAction("Index", "Home");
-                    }
+                    FormsAuthentication.SetAuthCookie(authenticationResult.Message, loginModel.Remember);
+                    return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("", "Incorrect login data");
+
+                ModelState.AddModelError("", authenticationResult.Message);
             }
             return View(loginModel);
         }
@@ -101,27 +101,15 @@ namespace UTMusic.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                User userByEmail = DataManager.Users.GetUserByEmail(registerModel.Email);
-                User userByName = DataManager.Users.GetUserByName(registerModel.Name);
-                if (userByEmail == null && userByName == null)
+                var userDTO = new UserDTO { Email = registerModel.Email, Name = registerModel.Name, Password = registerModel.Password };
+                var registerResults = UserService.Create(userDTO);
+                if (registerResults.All(r => r.Succedeed)) 
                 {
-                    DataManager.Users.SaveUser(
-                        new User
-                        {
-                            Email = registerModel.Email,
-                            Name = registerModel.Name,
-                            Password = registerModel.Password
-                        }
-                    );
                     return RedirectToAction("Login");
                 }
-                if (userByEmail != null)
+                foreach (var result in registerResults)
                 {
-                    ModelState.AddModelError("Email", "User with such E-Mail already exists");
-                }
-                if (userByName != null)
-                {
-                    ModelState.AddModelError("Name", "User with such Name already exists");
+                    ModelState.AddModelError(result.Property, result.Message);
                 }
             }
             return View(registerModel);

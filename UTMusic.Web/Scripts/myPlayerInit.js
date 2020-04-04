@@ -1,11 +1,11 @@
 // Mythium Archive: https://archive.org/details/mythium/
 
 // initialize plyr
-var player, index, playing, mediaPath, extension, trackCount, npAction, npTitle, audio, fileName;
+var player, index, playing, mediaPath, extension, trackCount, npAction, npTitle, audio, fileName, plUserList, userSongCount;
 function loadTrack(id) {
 	$('.plSel').removeClass('plSel');
 	var newId = id;
-	var userSongCount = document.getElementById('plUserList').children.length;
+
 	idName = "#plUserList";
 	if (id >= userSongCount) {
 		idName = "#plList";
@@ -65,7 +65,9 @@ jQuery(function () {
 				loadTrack(index);
 			}
 		}).get(0),
-		fileName = document.getElementsByClassName("plItem")[0].getAttribute("file");
+		fileName = document.getElementsByClassName("plItem")[0].getAttribute("file"),
+		plUserList = document.getElementById('plUserList'),
+		userSongCount = plUserList != null ? plUserList.children.length : 0;
 	$('#btnPrev').on('click', function () {
 		if (index > 0) {
 			index--;

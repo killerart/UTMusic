@@ -7,9 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTMusic.Web", "UTMusic.Web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTMusic.BusinessLogic", "UTMusic.BusinessLogic\UTMusic.BusinessLogic.csproj", "{6460DC50-19CA-42D5-AAD4-E2CEF367F7A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTMusic.Data", "UTMusic.Domain\UTMusic.Data.csproj", "{0635B965-11E2-4A8B-8797-B5ACCFEDF7E0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTMusic.Helpers", "UTMusic.Helpers\UTMusic.Helpers.csproj", "{16C495E3-E286-4C89-8A81-4664546C2877}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTMusic.DataAccess", "UTMusic.Domain\UTMusic.DataAccess.csproj", "{0635B965-11E2-4A8B-8797-B5ACCFEDF7E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{0635B965-11E2-4A8B-8797-B5ACCFEDF7E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0635B965-11E2-4A8B-8797-B5ACCFEDF7E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0635B965-11E2-4A8B-8797-B5ACCFEDF7E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16C495E3-E286-4C89-8A81-4664546C2877}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16C495E3-E286-4C89-8A81-4664546C2877}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16C495E3-E286-4C89-8A81-4664546C2877}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16C495E3-E286-4C89-8A81-4664546C2877}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

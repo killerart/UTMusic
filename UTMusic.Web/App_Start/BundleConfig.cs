@@ -26,7 +26,8 @@ namespace UTMusic.Web.App_Start
                 "~/Content/mdbootstrap/js/bootstrap.min.js",
                 "~/Content/mdbootstrap/js/mdb.min.js",
                 "~/Scripts/html5media.min.js",
-                "~/Scripts/plyr.min.js"));
+                "~/Scripts/plyr.min.js",
+                "~/Scripts/sticky.js"));
             bundles.Add(new ScriptBundle("~/bundles/myPlayer/js").Include("~/Scripts/myPlayer.js"));
             bundles.Add(new ScriptBundle("~/bundles/myPlayerInit/js").Include("~/Scripts/myPlayerInit.js"));
             bundles.Add(new ScriptBundle("~/bundles/jquery/js").Include("~/Scripts/jquery-3.4.1.min.js"));

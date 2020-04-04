@@ -1,11 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace UTMusic.Data.Entities
+namespace UTMusic.DataAccess.Entities
 {
     public class User
     {
@@ -13,9 +12,7 @@ namespace UTMusic.Data.Entities
         public string Email { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Song> Songs { get; set; }
-        [JsonIgnore]
         public virtual ICollection<IdNumber> OrderOfSongs { get; set; }
         public User()
         {

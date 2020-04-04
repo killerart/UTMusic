@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UTMusic.Data.Entities
+namespace UTMusic.DataAccess.Entities
 {
     public class IdNumber
     {

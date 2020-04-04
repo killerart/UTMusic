@@ -1,9 +1,10 @@
 ﻿jQuery(function ($) {
-	trackCount = trackCount = document.getElementById('plUserList').children.length + document.getElementById('plList').children.length;
+	plUserList = document.getElementById('plUserList');
+	userSongCount = plUserList != null ? plUserList.children.length : 0;
+	trackCount = trackCount = plUserList != null ? plUserList.children.length : 0 + document.getElementById('plList').children.length;
 	$(".plItem[file='" + fileName + "']").first().parent().addClass("plSel");
 	$('#plList .plItem').each(function (id, element) {
-		element.onclick =  function () {
-			var userSongCount = document.getElementById('plUserList').children.length;
+		element.onclick = function () {
 			if (id + userSongCount !== index) {
 				playTrack(id + userSongCount);
 			} else if (playing) {

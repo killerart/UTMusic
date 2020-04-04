@@ -191,6 +191,15 @@ audio {
 	color: #fff;
 }
 
+.sticky {
+	position: sticky;
+	transition: 0.5s;
+}
+
+.js-is-sticky {
+	background-color: #3E4551;
+}
+
 #tracks a {
 	border-radius: 3px;
 	color: #fff;

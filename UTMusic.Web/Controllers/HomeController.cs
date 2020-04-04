@@ -6,10 +6,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using UTMusic.BusinessLogic;
-using UTMusic.BusinessLogic.Implementations;
+using UTMusic.BusinessLogic.DataTransfer;
 using UTMusic.BusinessLogic.Interfaces;
-using UTMusic.Data.Entities;
+using UTMusic.BusinessLogic.Services;
 using UTMusic.Web.Models;
 
 namespace UTMusic.Web.Controllers
@@ -19,11 +18,13 @@ namespace UTMusic.Web.Controllers
         /// <summary>
         /// Менеджер репозиториев
         /// </summary>
-        private DataManager DataManager { get; } = new DataManager();
-        private User LoggedUser {
+        private IUserService UserService { get; } = new UserService();
+        private IMusicService MusicService { get; } = new MusicService();
+        private UserDTO LoggedUser {
             get {
-                var user = DataManager.Users.GetCurrentUser(this);
-                return user;
+                Int32.TryParse(User.Identity.Name, out int id);
+                var userDTO = UserService.GetUser(id);
+                return userDTO;
             }
         }
         /// <summary>
@@ -42,8 +43,8 @@ namespace UTMusic.Web.Controllers
             var model = new HomePageModel
             {
                 CurrentUser = currentUser,
-                UserSongs = currentUser?.GetOrderedSongs(),
-                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
+                UserSongs = currentUser?.Songs,
+                AllSongs = MusicService.GetSongs()
             };
 
             return View(model);
@@ -57,18 +58,18 @@ namespace UTMusic.Web.Controllers
                 FormsAuthentication.SignOut();
                 return RedirectToAction("Index", new { searchValue });
             }
-
             var model = new HomePageModel
             {
                 CurrentUser = currentUser,
-                UserSongs = currentUser?.GetOrderedSongs(),
-                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
+                UserSongs = currentUser?.Songs,
+                AllSongs = MusicService.GetSongs()
             };
 
             if (!String.IsNullOrEmpty(searchValue))
             {
-                model.UserSongs = model.UserSongs?.Where(song => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1);
-                model.AllSongs = model.AllSongs?.Where(song => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1);
+                Func<SongDTO, bool> searchFunc = (song) => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1;
+                model.UserSongs = model.UserSongs?.Where(searchFunc);
+                model.AllSongs = model.AllSongs?.Where(searchFunc);
             }
             return PartialView("SongList", model);
         }
@@ -93,32 +94,30 @@ namespace UTMusic.Web.Controllers
                 {
                     var songName = Path.GetFileNameWithoutExtension(file.FileName);
                     var fileName = songName;
-                    if (DataManager.Songs.GetSongByFileName(fileName) != null)
+                    if (MusicService.FileExists(fileName))
                     {
                         fileName += "1";
                     }
                     var fileSavePath = Server.MapPath("~/Music/" +
                       fileName + extention);
-                    var song = new Song { Name = songName, FileName = fileName };
+                    file.SaveAs(fileSavePath);
+
+                    var songDTO = new SongDTO { Name = songName, FileName = fileName };
                     if (currentUser != null)
                     {
-                        currentUser.Songs.Add(song);
-                        DataManager.Users.SaveUser(currentUser);
-                        currentUser.OrderOfSongs.Add(new IdNumber { SongId = DataManager.Songs.GetSongByFileName(fileName).Id });
-                        DataManager.Users.SaveUser(currentUser);
+                        UserService.AddNewSong(ref currentUser, songDTO);
                     }
                     else
                     {
-                        DataManager.Songs.SaveSong(song);
+                        MusicService.AddSong(songDTO);
                     }
-                    file.SaveAs(fileSavePath);
                 }
             }
             var model = new HomePageModel
             {
                 CurrentUser = currentUser,
-                UserSongs = currentUser?.GetOrderedSongs(),
-                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
+                UserSongs = currentUser?.Songs,
+                AllSongs = MusicService.GetSongs()
             };
             return PartialView("SongList", model);
         }
@@ -131,18 +130,12 @@ namespace UTMusic.Web.Controllers
                 FormsAuthentication.SignOut();
                 return RedirectToAction("AddSong", new { songId });
             }
-            var song = DataManager.Songs.GetSongById(songId);
-            if (currentUser != null && song != null)
-            {
-                currentUser.Songs.Add(song);
-                currentUser.OrderOfSongs.Add(new IdNumber { SongId = songId });
-                DataManager.Users.SaveUser(currentUser);
-            }
+            UserService.AddExistingSong(ref currentUser, songId);
             var model = new HomePageModel
             {
                 CurrentUser = currentUser,
-                UserSongs = currentUser?.GetOrderedSongs(),
-                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
+                UserSongs = currentUser?.Songs,
+                AllSongs = MusicService.GetSongs()
             };
             return PartialView("SongList", model);
         }
@@ -160,19 +153,12 @@ namespace UTMusic.Web.Controllers
                 FormsAuthentication.SignOut();
                 return RedirectToAction("DeleteSong", new { songId });
             }
-            if (currentUser != null)
-            {
-                var song = currentUser.Songs.FirstOrDefault(s => s.Id == songId);
-                currentUser.Songs.Remove(song);
-                IdNumber idNumber = currentUser.OrderOfSongs.FirstOrDefault(i => i.SongId == songId);
-                currentUser.OrderOfSongs.Remove(idNumber);
-                DataManager.Users.SaveUser(currentUser);
-            }
+            UserService.DeleteSong(ref currentUser, songId);
             var model = new HomePageModel
             {
                 CurrentUser = currentUser,
-                UserSongs = currentUser?.GetOrderedSongs(),
-                AllSongs = DataManager.Songs.GetAllSongs()?.Reverse()
+                UserSongs = currentUser?.Songs,
+                AllSongs = MusicService.GetSongs()
             };
             return PartialView("SongList", model);
         }

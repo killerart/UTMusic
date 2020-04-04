@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using UTMusic.Data.Entities;
+using UTMusic.BusinessLogic.DataTransfer;
 
 namespace UTMusic.Web.Models
 {
     public class HeaderModel
     {
-        public User CurrentUser { get; set; }
+        public UserDTO CurrentUser { get; set; }
     }
 }
