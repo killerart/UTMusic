@@ -11,8 +11,6 @@ namespace UTMusic.DataAccess.EFContexts
     {
         public DbSet<Song> Songs { get; set; }
         public DbSet<User> Users { get; set; }
-        public MusicContext()
-            : base() { }
         public MusicContext(string connectionString)
             : base(connectionString) { }
     }

@@ -1,8 +1,11 @@
 ﻿jQuery(function ($) {
 	plUserList = document.getElementById('plUserList');
 	userSongCount = plUserList != null ? plUserList.children.length : 0;
-	trackCount = trackCount = plUserList != null ? plUserList.children.length : 0 + document.getElementById('plList').children.length;
-	$(".plItem[file='" + fileName + "']").first().parent().addClass("plSel");
+	trackCount = userSongCount + document.getElementById('plList').children.length;
+	var songs = $(idName + ' .plItem[file="' + fileName + '"]');
+	songs.first().parent().addClass("plSel");
+	index = $(".plItem").index(songs);
+
 	$('#plList .plItem').each(function (id, element) {
 		element.onclick = function () {
 			if (id + userSongCount !== index) {

@@ -14,7 +14,8 @@ namespace UTMusic.BusinessLogic.Services
 {
     public class UserService : IUserService
     {
-        private IUnitOfWork Database { get; set; } = new EFUnitOfWork();
+        private IUnitOfWork Database { get; set; }
+        public UserService(IUnitOfWork database) => Database = database;
 
         public void AddNewSong(ref UserDTO userDTO, SongDTO songDTO)
         {

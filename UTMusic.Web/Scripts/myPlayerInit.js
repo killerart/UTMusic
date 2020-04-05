@@ -1,7 +1,7 @@
 // Mythium Archive: https://archive.org/details/mythium/
 
 // initialize plyr
-var player, index, playing, mediaPath, extension, trackCount, npAction, npTitle, audio, fileName, plUserList, userSongCount;
+var player, index, playing, mediaPath, extension, trackCount, npAction, npTitle, audio, fileName, plUserList, userSongCount, idName;
 function loadTrack(id) {
 	$('.plSel').removeClass('plSel');
 	var newId = id;

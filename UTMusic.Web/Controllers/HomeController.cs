@@ -18,8 +18,13 @@ namespace UTMusic.Web.Controllers
         /// <summary>
         /// Менеджер репозиториев
         /// </summary>
-        private IUserService UserService { get; } = new UserService();
-        private IMusicService MusicService { get; } = new MusicService();
+        private IUserService UserService { get; }
+        private IMusicService MusicService { get; }
+        public HomeController(IUserService userService, IMusicService musicService)
+        {
+            UserService = userService;
+            MusicService = musicService;
+        }
         private UserDTO LoggedUser {
             get {
                 Int32.TryParse(User.Identity.Name, out int id);

@@ -14,10 +14,6 @@ namespace UTMusic.DataAccess.Repositories
         private readonly MusicContext db;
         private IRepository<Song> songRepository;
         private IRepository<User> userRepository;
-        public EFUnitOfWork()
-        {
-            db = new MusicContext();
-        }
         public EFUnitOfWork(string connectionString)
         {
             db = new MusicContext(connectionString);

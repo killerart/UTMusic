@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Optimization;
 
-namespace UTMusic.Web.App_Start
+namespace UTMusic.Web
 {
     public static class BundleConfig
     {
@@ -20,14 +20,18 @@ namespace UTMusic.Web.App_Start
             bundles.Add(new ScriptBundle("~/bundles/js")
                 .Include("~/Scripts/jquery-3.4.1.min.js",
                 "~/Scripts/jquery.unobtrusive-ajax.min.js",
-                "~/Scripts/jquery.validate.min.js",
-                "~/Scripts/jquery.validate.unobtrusive.min.js",
                 "~/Content/mdbootstrap/js/popper.min.js",
                 "~/Content/mdbootstrap/js/bootstrap.min.js",
                 "~/Content/mdbootstrap/js/mdb.min.js",
                 "~/Scripts/html5media.min.js",
                 "~/Scripts/plyr.min.js",
                 "~/Scripts/sticky.js"));
+            bundles.Add(new ScriptBundle("~/bundles/jqueryval")
+                .Include(
+                    "~/Scripts/jquery.validate.min.js",
+                    "~/Scripts/jquery.validate.unobtrusive.min.js"
+                )
+            );
             bundles.Add(new ScriptBundle("~/bundles/myPlayer/js").Include("~/Scripts/myPlayer.js"));
             bundles.Add(new ScriptBundle("~/bundles/myPlayerInit/js").Include("~/Scripts/myPlayerInit.js"));
             bundles.Add(new ScriptBundle("~/bundles/jquery/js").Include("~/Scripts/jquery-3.4.1.min.js"));

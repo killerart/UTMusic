@@ -17,7 +17,11 @@ namespace UTMusic.Web.Controllers
         /// <summary>
         /// Менеджер репозиториев
         /// </summary>
-        private IUserService UserService { get; } = new UserService();
+        private IUserService UserService { get; }
+        public AccountController(IUserService userService)
+        {
+            UserService = userService;
+        }
         private UserDTO LoggedUser {
             get {
                 Int32.TryParse(User.Identity.Name, out int id);
@@ -41,7 +45,7 @@ namespace UTMusic.Web.Controllers
                 }
                 return RedirectToAction("Index", "Home");
             }
-            return View(new LoginModel { CurrentUser = currentUser });
+            return View(new LoginModel { CurrentUser = currentUser, Email = "", Password = "", Remember = false });
         }
         /// <summary>
         /// Действие страницы регистрации
@@ -59,7 +63,7 @@ namespace UTMusic.Web.Controllers
                 }
                 return RedirectToAction("Index", "Home");
             }
-            return View(new RegisterModel { CurrentUser = currentUser });
+            return View(new RegisterModel { CurrentUser = currentUser, Email="", Name="", Password="" });
         }
         /// <summary>
         /// Обработка формы логина
@@ -103,7 +107,7 @@ namespace UTMusic.Web.Controllers
             {
                 var userDTO = new UserDTO { Email = registerModel.Email, Name = registerModel.Name, Password = registerModel.Password };
                 var registerResults = UserService.Create(userDTO);
-                if (registerResults.All(r => r.Succedeed)) 
+                if (registerResults.All(r => r.Succedeed))
                 {
                     return RedirectToAction("Login");
                 }

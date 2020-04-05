@@ -13,7 +13,8 @@ namespace UTMusic.BusinessLogic.Services
 {
     public class MusicService : IMusicService
     {
-        private IUnitOfWork Database { get; set; } = new EFUnitOfWork();
+        private IUnitOfWork Database { get; set; }
+        public MusicService(IUnitOfWork database) => Database = database;
 
         public void AddSong(SongDTO songDTO)
         {
