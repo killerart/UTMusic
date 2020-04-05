@@ -51,31 +51,20 @@ namespace UTMusic.Web.Controllers
                 UserSongs = currentUser?.Songs,
                 AllSongs = MusicService.GetSongs()
             };
-
+            TempData["searchValue"] = string.Empty;
             return View(model);
         }
         [HttpPost]
         public ActionResult SearchSong(string searchValue)
         {
             var currentUser = LoggedUser;
-            if (currentUser == null && User.Identity.IsAuthenticated)
-            {
-                FormsAuthentication.SignOut();
-                return RedirectToAction("Index", new { searchValue });
-            }
             var model = new HomePageModel
             {
                 CurrentUser = currentUser,
-                UserSongs = currentUser?.Songs,
-                AllSongs = MusicService.GetSongs()
+                UserSongs = MusicService.SearchSongs(currentUser?.Songs, searchValue),
+                AllSongs = MusicService.SearchSongs(searchValue)
             };
-
-            if (!String.IsNullOrEmpty(searchValue))
-            {
-                Func<SongDTO, bool> searchFunc = (song) => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1;
-                model.UserSongs = model.UserSongs?.Where(searchFunc);
-                model.AllSongs = model.AllSongs?.Where(searchFunc);
-            }
+            TempData["searchValue"] = searchValue;
             return PartialView("SongList", model);
         }
         /// <summary>
@@ -87,11 +76,6 @@ namespace UTMusic.Web.Controllers
         public ActionResult UploadSong(HttpPostedFileBase file)
         {
             var currentUser = LoggedUser;
-            if (currentUser == null && User.Identity.IsAuthenticated)
-            {
-                FormsAuthentication.SignOut();
-                return RedirectToAction("UploadSong", new { file });
-            }
             if (file != null)
             {
                 var extention = Path.GetExtension(file.FileName);
@@ -118,31 +102,14 @@ namespace UTMusic.Web.Controllers
                     }
                 }
             }
-            var model = new HomePageModel
-            {
-                CurrentUser = currentUser,
-                UserSongs = currentUser?.Songs,
-                AllSongs = MusicService.GetSongs()
-            };
-            return PartialView("SongList", model);
+            return SearchSong(TempData["searchValue"] as string);
         }
         [Authorize]
         public ActionResult AddSong(int songId)
         {
             var currentUser = LoggedUser;
-            if (currentUser == null && User.Identity.IsAuthenticated)
-            {
-                FormsAuthentication.SignOut();
-                return RedirectToAction("AddSong", new { songId });
-            }
             UserService.AddExistingSong(ref currentUser, songId);
-            var model = new HomePageModel
-            {
-                CurrentUser = currentUser,
-                UserSongs = currentUser?.Songs,
-                AllSongs = MusicService.GetSongs()
-            };
-            return PartialView("SongList", model);
+            return SearchSong(TempData["searchValue"] as string);
         }
         /// <summary>
         /// Удаление песни
@@ -153,19 +120,8 @@ namespace UTMusic.Web.Controllers
         public ActionResult DeleteSong(int songId)
         {
             var currentUser = LoggedUser;
-            if (currentUser == null && User.Identity.IsAuthenticated)
-            {
-                FormsAuthentication.SignOut();
-                return RedirectToAction("DeleteSong", new { songId });
-            }
             UserService.DeleteSong(ref currentUser, songId);
-            var model = new HomePageModel
-            {
-                CurrentUser = currentUser,
-                UserSongs = currentUser?.Songs,
-                AllSongs = MusicService.GetSongs()
-            };
-            return PartialView("SongList", model);
+            return SearchSong(TempData["searchValue"] as string);
         }
     }
 }

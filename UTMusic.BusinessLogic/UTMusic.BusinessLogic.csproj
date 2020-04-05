@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTransfer\SearchResultsDTO.cs" />
     <Compile Include="DataTransfer\SongDTO.cs" />
     <Compile Include="DataTransfer\UserDTO.cs" />
     <Compile Include="Infrastructure\OperationResult.cs" />

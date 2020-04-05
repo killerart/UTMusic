@@ -22,14 +22,22 @@ namespace UTMusic.BusinessLogic.Services
             Database.Save();
         }
 
-        public bool FileExists(string fileName)
-        {
-            return Database.Songs.Find(s => s.FileName == fileName).FirstOrDefault() != null;
-        }
+        public bool FileExists(string fileName) => Database.Songs.Find(s => s.FileName == fileName).FirstOrDefault() != null;
 
-        public IEnumerable<SongDTO> GetSongs()
+        public IEnumerable<SongDTO> GetSongs() => Database.Songs.GetAll()?.Reverse().ToList()
+            .ConvertAll(s => new SongDTO { Id = s.Id, FileName = s.FileName, Name = s.Name });
+        public IEnumerable<SongDTO> SearchSongs(IEnumerable<SongDTO> songs, string searchValue)
         {
-            return Database.Songs.GetAll()?.Reverse().ToList().ConvertAll(s => new SongDTO { Id = s.Id, FileName = s.FileName, Name = s.Name });
+            if (songs != null && !string.IsNullOrEmpty(searchValue))
+            {
+                Func<SongDTO, bool> searchFunc = (song) => song.Name.IndexOf(searchValue, StringComparison.InvariantCultureIgnoreCase) != -1;
+                return songs?.Where(searchFunc);
+            }
+            return songs;
+        }
+        public IEnumerable<SongDTO> SearchSongs(string searchValue)
+        {
+            return SearchSongs(GetSongs(), searchValue);
         }
     }
 }

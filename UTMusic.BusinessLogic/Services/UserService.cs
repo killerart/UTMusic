@@ -20,10 +20,13 @@ namespace UTMusic.BusinessLogic.Services
         public void AddNewSong(ref UserDTO userDTO, SongDTO songDTO)
         {
             var user = Database.Users.Get(userDTO.Id);
-            user.Songs.Add(new Song { Name = songDTO.Name, FileName = songDTO.FileName });
-            Database.Save();
-            user.OrderOfSongs.Add(new IdNumber { SongId = Database.Songs.Find(s => s.FileName == songDTO.FileName).First().Id });
-            Database.Save();
+            if (user != null)
+            {
+                user.Songs.Add(new Song { Name = songDTO.Name, FileName = songDTO.FileName });
+                Database.Save();
+                user.OrderOfSongs.Add(new IdNumber { SongId = Database.Songs.Find(s => s.FileName == songDTO.FileName).First().Id });
+                Database.Save();
+            }
             userDTO = UserToUserDTO(user);
         }
 
@@ -31,7 +34,7 @@ namespace UTMusic.BusinessLogic.Services
         {
             var song = Database.Songs.Get(songId);
             var user = Database.Users.Get(userDTO.Id);
-            if (song != null)
+            if (song != null && user != null)
             {
                 user.Songs.Add(song);
                 user.OrderOfSongs.Add(new IdNumber { SongId = songId });
@@ -44,7 +47,7 @@ namespace UTMusic.BusinessLogic.Services
         {
             var user = Database.Users.Get(userDTO.Id);
             var song = user.Songs.FirstOrDefault(s => s.Id == songId);
-            if (song != null)
+            if (song != null && user != null)
             {
                 user.Songs.Remove(song);
                 IdNumber idNumber = user.OrderOfSongs.FirstOrDefault(i => i.SongId == songId);
@@ -94,10 +97,6 @@ namespace UTMusic.BusinessLogic.Services
             }
             return registerResults;
         }
-        public void Dispose()
-        {
-            Database.Dispose();
-        }
         public UserDTO GetUser(int id)
         {
             var user = Database.Users.Get(id);
@@ -110,6 +109,10 @@ namespace UTMusic.BusinessLogic.Services
             var userDTO = new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Password = user.Password };
             userDTO.Songs = user.GetOrderedSongs().ConvertAll(s => new SongDTO { Id = s.Id, Name = s.Name, FileName = s.FileName });
             return userDTO;
+        }
+        public void Dispose()
+        {
+            Database.Dispose();
         }
     }
 }

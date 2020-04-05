@@ -14,10 +14,7 @@ namespace UTMusic.DataAccess.Repositories
         private readonly MusicContext db;
         private IRepository<Song> songRepository;
         private IRepository<User> userRepository;
-        public EFUnitOfWork(string connectionString)
-        {
-            db = new MusicContext(connectionString);
-        }
+        public EFUnitOfWork(string connectionString) => db = new MusicContext(connectionString);
         public IRepository<Song> Songs {
             get {
                 if (songRepository == null)
@@ -34,14 +31,11 @@ namespace UTMusic.DataAccess.Repositories
             }
         }
 
-        public void Save()
-        {
-            db.SaveChanges();
-        }
+        public void Save() => db.SaveChanges();
 
         private bool disposed = false;
 
-        public virtual void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
             {

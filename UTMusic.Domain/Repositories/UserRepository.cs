@@ -14,35 +14,17 @@ namespace UTMusic.DataAccess.Repositories
     {
         private readonly MusicContext db;
 
-        public UserRepository(MusicContext context)
-        {
-            db = context;
-        }
+        public UserRepository(MusicContext context) => db = context;
 
-        public IEnumerable<User> GetAll()
-        {
-            return db.Users;
-        }
+        public IEnumerable<User> GetAll() => db.Users;
 
-        public User Get(int id)
-        {
-            return db.Users.Find(id);
-        }
+        public User Get(int id) => db.Users.Find(id);
 
-        public void Create(User user)
-        {
-            db.Users.Add(user);
-        }
+        public void Create(User user) => db.Users.Add(user);
 
-        public void Update(User user)
-        {
-            db.Entry(user).State = EntityState.Modified;
-        }
+        public void Update(User user) => db.Entry(user).State = EntityState.Modified;
 
-        public IEnumerable<User> Find(Func<User, Boolean> predicate)
-        {
-            return db.Users.Where(predicate).ToList();
-        }
+        public IEnumerable<User> Find(Func<User, Boolean> predicate) => db.Users.Where(predicate).ToList();
 
         public void Delete(int id)
         {
