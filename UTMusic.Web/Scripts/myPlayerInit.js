@@ -43,7 +43,7 @@ jQuery(function () {
 	}),
 		index = 0,
 		playing = false,
-		mediaPath = '/Music/',
+		mediaPath = '/Content/Music/',
 		extension = '.mp3',
 		npAction = $('#npAction'),
 		npTitle = $('#npTitle'),

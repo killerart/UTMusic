@@ -87,8 +87,11 @@ namespace UTMusic.Web.Controllers
                     {
                         fileName += "1";
                     }
-                    var fileSavePath = Server.MapPath("~/Music/" +
-                      fileName + extention);
+                    var directoryPath = Server.MapPath("~/Content/Music");
+                    if (!Directory.Exists(directoryPath))
+                        Directory.CreateDirectory(directoryPath);
+                    var fileSavePath = directoryPath + "/" +
+                      fileName + extention;
                     file.SaveAs(fileSavePath);
 
                     var songDTO = new SongDTO { Name = songName, FileName = fileName };
