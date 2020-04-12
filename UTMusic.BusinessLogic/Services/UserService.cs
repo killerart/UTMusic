@@ -8,7 +8,6 @@ using UTMusic.BusinessLogic.Infrastructure;
 using UTMusic.BusinessLogic.Interfaces;
 using UTMusic.DataAccess.Entities;
 using UTMusic.DataAccess.Interfaces;
-using UTMusic.DataAccess.Repositories;
 
 namespace UTMusic.BusinessLogic.Services
 {

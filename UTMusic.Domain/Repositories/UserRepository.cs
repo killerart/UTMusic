@@ -24,7 +24,7 @@ namespace UTMusic.DataAccess.Repositories
 
         public void Update(User user) => db.Entry(user).State = EntityState.Modified;
 
-        public IEnumerable<User> Find(Func<User, Boolean> predicate) => db.Users.Where(predicate).ToList();
+        public IEnumerable<User> Find(Func<User, bool> predicate) => db.Users.Where(predicate).ToList();
 
         public void Delete(int id)
         {
