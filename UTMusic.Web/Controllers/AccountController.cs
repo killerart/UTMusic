@@ -14,9 +14,6 @@ namespace UTMusic.Web.Controllers
 {
     public class AccountController : Controller
     {
-        /// <summary>
-        /// Менеджер репозиториев
-        /// </summary>
         private IUserService UserService { get; }
         public AccountController(IUserService userService)
         {
@@ -128,6 +125,5 @@ namespace UTMusic.Web.Controllers
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
         }
-
     }
 }

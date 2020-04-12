@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,9 +14,6 @@ namespace UTMusic.Web.Controllers
 {
     public class HomeController : Controller
     {
-        /// <summary>
-        /// Менеджер репозиториев
-        /// </summary>
         private IUserService UserService { get; }
         private IMusicService MusicService { get; }
         public HomeController(IUserService userService, IMusicService musicService)

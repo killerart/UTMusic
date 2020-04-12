@@ -24,8 +24,7 @@ namespace UTMusic.Web
                 "~/Content/mdbootstrap/js/bootstrap.min.js",
                 "~/Content/mdbootstrap/js/mdb.min.js",
                 "~/Scripts/html5media.min.js",
-                "~/Scripts/plyr.min.js",
-                "~/Scripts/sticky.js"));
+                "~/Scripts/plyr.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/jqueryval")
                 .Include(
                     "~/Scripts/jquery.validate.min.js",

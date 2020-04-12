@@ -1,16 +1,15 @@
 ﻿@{
 	ViewBag.Title = "Home";
-	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="container-md px-md-5">
 	<div class="row">
 		<div class="container">
 			<div class="column add-bottom">
 				<div id="mainwrap">
-					<div @*class="sticky"*@ id="nowPlay" @*style="top:0px"*@>
+					<div id="nowPlay">
 						<span id="npAction">Paused...</span><span id="npTitle"></span>
 					</div>
-					<div @*class="sticky"*@ id="audiowrap" @*style="top:67px"*@>
+					<div id="audiowrap">
 						<div id="audio0">
 							<audio id="audio1" preload="auto" controls>
 								Your browser does not support HTML5 Audio!
