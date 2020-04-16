@@ -6,7 +6,7 @@ using UTMusic.BusinessLogic.DataTransfer;
 
 namespace UTMusic.Web.Models
 {
-    public class HomePageModel : HeaderModel
+    public class SongListModel : HeaderModel
     {
         public IEnumerable<SongDTO> UserSongs { get; set; }
         public IEnumerable<SongDTO> AllSongs { get; set; }

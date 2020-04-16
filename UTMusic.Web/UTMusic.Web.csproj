@@ -2054,7 +2054,7 @@
     <Compile Include="Models\HeaderModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
-    <Compile Include="Models\HomePageModel.cs" />
+    <Compile Include="Models\SongListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\DependencyModule.cs" />
   </ItemGroup>

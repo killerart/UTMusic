@@ -11,24 +11,45 @@ using UTMusic.DataAccess.Interfaces;
 
 namespace UTMusic.BusinessLogic.Services
 {
-    public class UserService : IUserService
+    public class UserService : IUserService, IDisposable
     {
         private IUnitOfWork Database { get; set; }
         public UserService(IUnitOfWork database) => Database = database;
-
+        public OperationResult Authenticate(UserDTO userDTO)
+        {
+            User user = Database.Users.Find(u => u.Email == userDTO.Email && u.Password == userDTO.Password).FirstOrDefault();
+            if (user != null)
+            {
+                return new OperationResult(true, user.Id.ToString(), "");
+            }
+            return new OperationResult(false, "Incorrect login data", "");
+        }
+        private UserDTO UserToUserDTO(User user)
+        {
+            if (user == null)
+                return null;
+            var userDTO = new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Password = user.Password };
+            userDTO.Songs = user.GetOrderedSongs().ConvertAll(s => new SongDTO { Id = s.Id, Name = s.Name, FileName = s.FileName });
+            return userDTO;
+        }
+        public UserDTO GetUser(int id)
+        {
+            var user = Database.Users.Get(id);
+            return UserToUserDTO(user);
+        }
         public void AddNewSong(ref UserDTO userDTO, SongDTO songDTO)
         {
             var user = Database.Users.Get(userDTO.Id);
             if (user != null)
             {
-                user.Songs.Add(new Song { Name = songDTO.Name, FileName = songDTO.FileName });
+                var song = new Song { Name = songDTO.Name, FileName = songDTO.FileName };
+                user.Songs.Add(song);
                 Database.Save();
-                user.OrderOfSongs.Add(new IdNumber { SongId = Database.Songs.Find(s => s.FileName == songDTO.FileName).First().Id });
+                user.OrderOfSongs.Add(new IdNumber { SongId = song.Id });
                 Database.Save();
+                userDTO = UserToUserDTO(user);
             }
-            userDTO = UserToUserDTO(user);
         }
-
         public void AddExistingSong(ref UserDTO userDTO, int songId)
         {
             var song = Database.Songs.Get(songId);
@@ -41,7 +62,6 @@ namespace UTMusic.BusinessLogic.Services
                 userDTO = UserToUserDTO(user);
             }
         }
-
         public void DeleteSong(ref UserDTO userDTO, int songId)
         {
             var user = Database.Users.Get(userDTO.Id);
@@ -54,16 +74,6 @@ namespace UTMusic.BusinessLogic.Services
                 Database.Save();
                 userDTO = UserToUserDTO(user);
             }
-        }
-
-        public OperationResult Authenticate(UserDTO userDTO)
-        {
-            User user = Database.Users.Find(u => u.Email == userDTO.Email && u.Password == userDTO.Password).FirstOrDefault();
-            if (user != null)
-            {
-                return new OperationResult(true, user.Id.ToString(), "");
-            }
-            return new OperationResult(false, "Incorrect login data", "");
         }
         public IEnumerable<OperationResult> Create(UserDTO userDTO)
         {
@@ -96,22 +106,6 @@ namespace UTMusic.BusinessLogic.Services
             }
             return registerResults;
         }
-        public UserDTO GetUser(int id)
-        {
-            var user = Database.Users.Get(id);
-            return UserToUserDTO(user);
-        }
-        private UserDTO UserToUserDTO(User user)
-        {
-            if (user == null)
-                return null;
-            var userDTO = new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Password = user.Password };
-            userDTO.Songs = user.GetOrderedSongs().ConvertAll(s => new SongDTO { Id = s.Id, Name = s.Name, FileName = s.FileName });
-            return userDTO;
-        }
-        public void Dispose()
-        {
-            Database.Dispose();
-        }
+        public void Dispose() => Database.Dispose();
     }
 }

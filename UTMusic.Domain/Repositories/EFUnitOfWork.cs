@@ -22,7 +22,6 @@ namespace UTMusic.DataAccess.Repositories
                 return songRepository;
             }
         }
-
         public IRepository<User> Users {
             get {
                 if (userRepository == null)
@@ -30,11 +29,8 @@ namespace UTMusic.DataAccess.Repositories
                 return userRepository;
             }
         }
-
         public void Save() => db.SaveChanges();
-
         private bool disposed = false;
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
@@ -46,7 +42,6 @@ namespace UTMusic.DataAccess.Repositories
                 disposed = true;
             }
         }
-
         public void Dispose()
         {
             Dispose(true);

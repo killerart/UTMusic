@@ -11,11 +11,10 @@ namespace UTMusic.BusinessLogic.Interfaces
     public interface IUserService
     {
         OperationResult Authenticate(UserDTO userDTO);
+        UserDTO GetUser(int id);
         void AddNewSong(ref UserDTO userDTO, SongDTO songDTO);
         void AddExistingSong(ref UserDTO userDTO, int songId);
         void DeleteSong(ref UserDTO userDTO, int songId);
         IEnumerable<OperationResult> Create(UserDTO userDTO);
-        UserDTO GetUser(int id);
-        void Dispose();
     }
 }

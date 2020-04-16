@@ -7,7 +7,6 @@ using System.Web.Mvc;
 using System.Web.Security;
 using UTMusic.BusinessLogic.DataTransfer;
 using UTMusic.BusinessLogic.Interfaces;
-using UTMusic.BusinessLogic.Services;
 using UTMusic.Web.Models;
 
 namespace UTMusic.Web.Controllers
@@ -41,7 +40,7 @@ namespace UTMusic.Web.Controllers
                 FormsAuthentication.SignOut();
                 return RedirectToAction("Index");
             }
-            var model = new HomePageModel
+            var model = new SongListModel
             {
                 CurrentUser = currentUser,
                 UserSongs = currentUser?.Songs,
@@ -54,10 +53,10 @@ namespace UTMusic.Web.Controllers
         public ActionResult SearchSong(string searchValue)
         {
             var currentUser = LoggedUser;
-            var model = new HomePageModel
+            var model = new SongListModel
             {
                 CurrentUser = currentUser,
-                UserSongs = MusicService.SearchSongs(currentUser?.Songs, searchValue),
+                UserSongs = MusicService.SearchSongs(searchValue, currentUser?.Songs),
                 AllSongs = MusicService.SearchSongs(searchValue)
             };
             TempData["searchValue"] = searchValue;

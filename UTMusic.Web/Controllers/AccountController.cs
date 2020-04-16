@@ -5,9 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using UTMusic.BusinessLogic.DataTransfer;
-using UTMusic.BusinessLogic.Infrastructure;
 using UTMusic.BusinessLogic.Interfaces;
-using UTMusic.BusinessLogic.Services;
 using UTMusic.Web.Models;
 
 namespace UTMusic.Web.Controllers
@@ -32,17 +30,16 @@ namespace UTMusic.Web.Controllers
         /// <returns>Страница регистрации</returns>
         public ActionResult Login()
         {
-            var currentUser = LoggedUser;
             if (User.Identity.IsAuthenticated)
             {
-                if (currentUser == null)
+                if (LoggedUser == null)
                 {
                     FormsAuthentication.SignOut();
                     return RedirectToAction("Login");
                 }
                 return RedirectToAction("Index", "Home");
             }
-            return View(new LoginModel { CurrentUser = currentUser, Email = "", Password = "", Remember = false });
+            return View(new LoginModel());
         }
         /// <summary>
         /// Действие страницы регистрации
@@ -50,17 +47,16 @@ namespace UTMusic.Web.Controllers
         /// <returns>Страница регистрации</returns>
         public ActionResult Register()
         {
-            var currentUser = LoggedUser;
             if (User.Identity.IsAuthenticated)
             {
-                if (currentUser == null)
+                if (LoggedUser == null)
                 {
                     FormsAuthentication.SignOut();
                     return RedirectToAction("Register");
                 }
                 return RedirectToAction("Index", "Home");
             }
-            return View(new RegisterModel { CurrentUser = currentUser, Email="", Name="", Password="" });
+            return View(new RegisterModel());
         }
         /// <summary>
         /// Обработка формы логина
@@ -83,7 +79,6 @@ namespace UTMusic.Web.Controllers
                     FormsAuthentication.SetAuthCookie(authenticationResult.Message, loginModel.Remember);
                     return RedirectToAction("Index", "Home");
                 }
-
                 ModelState.AddModelError("", authenticationResult.Message);
             }
             return View(loginModel);
