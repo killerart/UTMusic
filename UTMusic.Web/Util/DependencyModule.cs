@@ -13,7 +13,6 @@ namespace UTMusic.Web.Util
         public override void Load()
         {
             Bind<IMusicService>().To<MusicService>();
-            Bind<IUserService>().To<UserService>();
         }
     }
 }

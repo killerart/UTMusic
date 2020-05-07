@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using UTMusic.BusinessLogic.DataTransfer;
 using UTMusic.BusinessLogic.Interfaces;
 using UTMusic.DataAccess.Entities;
@@ -24,7 +26,44 @@ namespace UTMusic.BusinessLogic.Services
             Database.Songs.Create(new Song { Name = songDTO.Name, FileName = songDTO.FileName });
             Database.Save();
         }
-        public bool FileExists(string fileName) => Database.Songs.Find(s => s.FileName == fileName).FirstOrDefault() != null;
+        public void RemoveSong(int songId, string directory)
+        {
+            var song = Database.Songs.Get(songId);
+            var path = directory + "/" + song.FileName + ".mp3";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            Database.Songs.Delete(songId);
+            Database.Save();
+        }
+        public bool SaveSongToDisk(HttpPostedFileBase file, string directory, out SongDTO songDTO)
+        {
+            songDTO = null;
+            if (file != null)
+            {
+                var extention = Path.GetExtension(file.FileName);
+                if (extention == ".mp3")
+                {
+                    var songName = Path.GetFileNameWithoutExtension(file.FileName);
+                    var fileName = songName;
+                    if (FileExists(fileName))
+                    {
+                        fileName += "1";
+                    }
+                    if (!Directory.Exists(directory))
+                        Directory.CreateDirectory(directory);
+                    var fileSavePath = directory + "/" +
+                      fileName + extention;
+                    file.SaveAs(fileSavePath);
+
+                    songDTO = new SongDTO { Name = songName, FileName = fileName };
+                    return true;
+                }
+            }
+            return false;
+        }
+        private bool FileExists(string fileName) => Database.Songs.Find(s => s.FileName == fileName).FirstOrDefault() != null;
         public IEnumerable<SongDTO> SearchSongs(string searchValue, IEnumerable<SongDTO> songs)
         {
             if (songs != null && !string.IsNullOrEmpty(searchValue))

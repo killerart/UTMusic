@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -7,10 +8,10 @@ using UTMusic.DataAccess.Entities;
 
 namespace UTMusic.DataAccess.EFContexts
 {
-    public class MusicContext : DbContext
+    public class MusicContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Song> Songs { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<ClientProfile> ClientProfiles { get; set; }
         public MusicContext(string connectionString)
             : base(connectionString) { }
     }

@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace UTMusic.DataAccess.Entities
 {
-    public class User
+    public class ClientProfile
     {
-        public int Id { get; set; }
-        public string Email { get; set; }
-        public string Name { get; set; }
-        public string Password { get; set; }
+        [Key]
+        [ForeignKey("ApplicationUser")]
+        public string Id { get; set; }
+        public string UserName { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<Song> Songs { get; set; }
         public virtual ICollection<IdNumber> OrderOfSongs { get; set; }
-        public User()
+        public ClientProfile()
         {
             Songs = new List<Song>();
             OrderOfSongs = new List<IdNumber>();

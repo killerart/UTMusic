@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,21 +13,12 @@ using UTMusic.Web.Models;
 
 namespace UTMusic.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private IUserService UserService { get; }
         private IMusicService MusicService { get; }
-        public HomeController(IUserService userService, IMusicService musicService)
+        public HomeController(IMusicService musicService)
         {
-            UserService = userService;
             MusicService = musicService;
-        }
-        private UserDTO LoggedUser {
-            get {
-                Int32.TryParse(User.Identity.Name, out int id);
-                var userDTO = UserService.GetUser(id);
-                return userDTO;
-            }
         }
         /// <summary>
         /// Действие главной страницы
@@ -35,11 +28,6 @@ namespace UTMusic.Web.Controllers
         public ActionResult Index()
         {
             var currentUser = LoggedUser;
-            if (currentUser == null && User.Identity.IsAuthenticated)
-            {
-                FormsAuthentication.SignOut();
-                return RedirectToAction("Index");
-            }
             var model = new SongListModel
             {
                 CurrentUser = currentUser,
@@ -70,26 +58,9 @@ namespace UTMusic.Web.Controllers
         [HttpPost]
         public ActionResult UploadSong(HttpPostedFileBase file)
         {
-            var currentUser = LoggedUser;
-            if (file != null)
-            {
-                var extention = Path.GetExtension(file.FileName);
-                if (extention == ".mp3")
-                {
-                    var songName = Path.GetFileNameWithoutExtension(file.FileName);
-                    var fileName = songName;
-                    if (MusicService.FileExists(fileName))
-                    {
-                        fileName += "1";
-                    }
-                    var directoryPath = Server.MapPath("~/Music");
-                    if (!Directory.Exists(directoryPath))
-                        Directory.CreateDirectory(directoryPath);
-                    var fileSavePath = directoryPath + "/" +
-                      fileName + extention;
-                    file.SaveAs(fileSavePath);
 
-                    var songDTO = new SongDTO { Name = songName, FileName = fileName };
+            var currentUser = LoggedUser;
+            if (MusicService.SaveSongToDisk(file, Server.MapPath("~/Music"), out SongDTO songDTO))
                     if (currentUser != null)
                     {
                         UserService.AddNewSong(ref currentUser, songDTO);
@@ -98,8 +69,6 @@ namespace UTMusic.Web.Controllers
                     {
                         MusicService.AddSong(songDTO);
                     }
-                }
-            }
             return SearchSong(TempData["searchValue"] as string);
         }
         [Authorize]
@@ -115,11 +84,21 @@ namespace UTMusic.Web.Controllers
         /// <param name="songId">Id песни, которую надо удалить</param>
         /// <returns>Главна страница</returns>
         [Authorize]
-        public ActionResult DeleteSong(int songId)
+        public ActionResult RemoveSong(int songId)
         {
             var currentUser = LoggedUser;
-            UserService.DeleteSong(ref currentUser, songId);
+            UserService.RemoveSong(ref currentUser, songId);
             return SearchSong(TempData["searchValue"] as string);
+        }
+        [Authorize]
+        public ActionResult DeleteSong(int songId)
+        {
+            if (LoggedUser.Role == "admin")
+            {
+                MusicService.RemoveSong(songId, Server.MapPath("~/Music"));
+                return SearchSong(TempData["searchValue"] as string);
+            }
+            return RedirectToAction("Index");
         }
     }
 }
