@@ -6,16 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using UTMusic.BusinessLogic.DataTransfer;
+using UTMusic.BusinessLogic.Infrastructure;
 using UTMusic.BusinessLogic.Interfaces;
 using UTMusic.DataAccess.Entities;
 using UTMusic.DataAccess.Interfaces;
 
 namespace UTMusic.BusinessLogic.Services
 {
-    public class MusicService : IMusicService, IDisposable
+    public class MusicService : Service, IMusicApi
     {
-        private IUnitOfWork Database { get; set; }
-        public MusicService(IUnitOfWork database) => Database = database;
+        public MusicService(IUnitOfWork database) : base(database)
+        {
+        }
+
         public IEnumerable<SongDTO> GetSongs()
         {
             return Database.Songs.GetAll()?.Reverse().ToList()
@@ -26,18 +29,7 @@ namespace UTMusic.BusinessLogic.Services
             Database.Songs.Create(new Song { Name = songDTO.Name, FileName = songDTO.FileName });
             Database.Save();
         }
-        public void RemoveSong(int songId, string directory)
-        {
-            var song = Database.Songs.Get(songId);
-            var path = directory + "/" + song.FileName + ".mp3";
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-            Database.Songs.Delete(songId);
-            Database.Save();
-        }
-        public bool SaveSongToDisk(HttpPostedFileBase file, string directory, out SongDTO songDTO)
+        public OperationResult SaveSongToDisk(HttpPostedFileBase file, string directory, out SongDTO songDTO)
         {
             songDTO = null;
             if (file != null)
@@ -47,7 +39,7 @@ namespace UTMusic.BusinessLogic.Services
                 {
                     var songName = Path.GetFileNameWithoutExtension(file.FileName);
                     var fileName = songName;
-                    if (FileExists(fileName))
+                    while (FileExists(fileName))
                     {
                         fileName += "1";
                     }
@@ -58,10 +50,11 @@ namespace UTMusic.BusinessLogic.Services
                     file.SaveAs(fileSavePath);
 
                     songDTO = new SongDTO { Name = songName, FileName = fileName };
-                    return true;
+                    return new OperationResult(true, "", "");
                 }
+                return new OperationResult(false, "File is not in .mp3 format", "");
             }
-            return false;
+            return new OperationResult(false, "File upload failed", "");
         }
         private bool FileExists(string fileName) => Database.Songs.Find(s => s.FileName == fileName).FirstOrDefault() != null;
         public IEnumerable<SongDTO> SearchSongs(string searchValue, IEnumerable<SongDTO> songs)
@@ -77,6 +70,5 @@ namespace UTMusic.BusinessLogic.Services
         {
             return SearchSongs(searchValue, GetSongs());
         }
-        public void Dispose() => Database.Dispose();
     }
 }

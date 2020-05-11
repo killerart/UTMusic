@@ -9,20 +9,17 @@ using System.Web;
 using UTMusic.BusinessLogic.Interfaces;
 using UTMusic.BusinessLogic.Services;
 
-[assembly: OwinStartup(typeof(UTMusic.Web.IdentityConfig))]
+[assembly: OwinStartup(typeof(UTMusic.Web.OwinConfig))]
 
 namespace UTMusic.Web
 {
-    public class IdentityConfig
+    public class OwinConfig
     {
-        IServiceCreator serviceCreator = new ServiceCreator(); 
-        private IUserService CreateUserService()
-        {
-            return serviceCreator.CreateUserService("MusicContext");
-        }
+        IServiceCreator serviceCreator = new ServiceCreator("MusicContext");
         public void Configuration(IAppBuilder app)
         {
-            app.CreatePerOwinContext(CreateUserService);
+            app.CreatePerOwinContext(serviceCreator.CreateUserService);
+            app.CreatePerOwinContext(serviceCreator.CreateAdminService);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,

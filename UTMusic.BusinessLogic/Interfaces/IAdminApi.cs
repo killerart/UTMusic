@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace UTMusic.BusinessLogic.Interfaces
 {
-    public interface IServiceCreator
+    public interface IAdminApi : IDisposable
     {
-        IUserApi CreateUserService();
-        IAdminApi CreateAdminService();
+        void RemoveSong(int songId, string directory);
     }
 }

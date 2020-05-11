@@ -12,7 +12,6 @@ namespace UTMusic.DataAccess.Entities
         [Key]
         [ForeignKey("ApplicationUser")]
         public string Id { get; set; }
-        public string UserName { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<Song> Songs { get; set; }
         public virtual ICollection<IdNumber> OrderOfSongs { get; set; }

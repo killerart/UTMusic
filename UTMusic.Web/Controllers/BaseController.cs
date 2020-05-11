@@ -12,9 +12,14 @@ namespace UTMusic.Web.Controllers
 {
     public abstract class BaseController : Controller
     {
-        protected IUserService UserService {
+        protected IUserApi UserService {
             get {
-                return HttpContext.GetOwinContext().GetUserManager<IUserService>();
+                return HttpContext.GetOwinContext().GetUserManager<IUserApi>();
+            }
+        }
+        protected IAdminApi AdminService {
+            get {
+                return HttpContext.GetOwinContext().GetUserManager<IAdminApi>();
             }
         }
         protected IAuthenticationManager AuthenticationManager {

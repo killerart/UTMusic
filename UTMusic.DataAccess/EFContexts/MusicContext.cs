@@ -12,6 +12,7 @@ namespace UTMusic.DataAccess.EFContexts
     {
         public DbSet<Song> Songs { get; set; }
         public DbSet<ClientProfile> ClientProfiles { get; set; }
+        public DbSet<IdNumber> IdNumbers { get; set; }
         public MusicContext(string connectionString)
             : base(connectionString) { }
     }

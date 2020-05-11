@@ -63,11 +63,14 @@
   <ItemGroup>
     <Compile Include="DataTransfer\SongDTO.cs" />
     <Compile Include="DataTransfer\UserDTO.cs" />
-    <Compile Include="Infrastructure\OperationDetails.cs" />
+    <Compile Include="Infrastructure\OperationResult.cs" />
     <Compile Include="Infrastructure\ServiceModule.cs" />
-    <Compile Include="Interfaces\IMusicService.cs" />
+    <Compile Include="Interfaces\IAdminApi.cs" />
+    <Compile Include="Interfaces\IMusicApi.cs" />
     <Compile Include="Interfaces\IServiceCreator.cs" />
-    <Compile Include="Interfaces\IUserService.cs" />
+    <Compile Include="Interfaces\IUserApi.cs" />
+    <Compile Include="Services\AdminService.cs" />
+    <Compile Include="Services\Service.cs" />
     <Compile Include="Services\ServiceCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\MusicService.cs" />
@@ -78,11 +81,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UTMusic.Domain\UTMusic.DataAccess.csproj">
+    <ProjectReference Include="..\UTMusic.DataAccess\UTMusic.DataAccess.csproj">
       <Project>{0635b965-11e2-4a8b-8797-b5accfedf7e0}</Project>
       <Name>UTMusic.DataAccess</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

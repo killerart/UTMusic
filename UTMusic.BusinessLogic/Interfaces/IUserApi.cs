@@ -10,14 +10,14 @@ using UTMusic.DataAccess.Entities;
 
 namespace UTMusic.BusinessLogic.Interfaces
 {
-    public interface IUserService : IDisposable
+    public interface IUserApi : IDisposable
     {
-        Task<IEnumerable<OperationDetails>> Create(UserDTO userDTO);
+        Task<IEnumerable<OperationResult>> Create(UserDTO userDTO);
         Task<ClaimsIdentity> Authenticate(UserDTO userDTO);
         Task SetInitialData(UserDTO adminDTO, List<string> roles);
         UserDTO GetUser(string id);
-        void AddNewSong(ref UserDTO userDTO, SongDTO songDTO);
-        void AddExistingSong(ref UserDTO userDTO, int songId);
-        void RemoveSong(ref UserDTO userDTO, int songId);
+        void AddNewSong(UserDTO userDTO, SongDTO songDTO);
+        void AddExistingSong(UserDTO userDTO, int songId);
+        void RemoveSong(UserDTO userDTO, int songId);
     }
 }

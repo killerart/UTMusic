@@ -11,10 +11,10 @@ using UTMusic.DataAccess.Interfaces;
 
 namespace UTMusic.DataAccess.Repositories
 {
-    public class ClientManager : IRepository<ClientProfile>
+    public class ClientRepository : IRepository<ClientProfile, string>
     {
         private MusicContext db { get; }
-        public ClientManager(MusicContext db)
+        public ClientRepository(MusicContext db)
         {
             this.db = db;
         }
@@ -27,7 +27,7 @@ namespace UTMusic.DataAccess.Repositories
         {
             return db.ClientProfiles.ToList();
         }
-        public ClientProfile Get(int id)
+        public ClientProfile Get(string id)
         {
             return db.ClientProfiles.Find(id);
         }
@@ -39,11 +39,21 @@ namespace UTMusic.DataAccess.Repositories
         {
             db.Entry(item).State = EntityState.Modified;
         }
-        public void Delete(int id)
+        public void DeleteById(string id)
         {
-            var clientProfile = db.ClientProfiles.Find(id);
+            var clientProfile = Get(id);
+            Delete(clientProfile);
+        }
+        public void Delete(ClientProfile clientProfile)
+        {
             if (clientProfile != null)
+            {
+                foreach (var idNumber in clientProfile.OrderOfSongs)
+                {
+                    db.IdNumbers.Remove(idNumber);
+                }
                 db.ClientProfiles.Remove(clientProfile);
+            }
         }
     }
 }

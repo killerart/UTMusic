@@ -10,13 +10,18 @@ namespace UTMusic.BusinessLogic.Interfaces
 {
     public class ServiceCreator : IServiceCreator
     {
-        public IUserService CreateUserService(string connection)
+        private string Connection { get; }
+        public ServiceCreator(string connection)
         {
-            return new UserService(new UnitOfWork(connection));
+            Connection = connection;
         }
-        public IMusicService CreateMusicService(string connection)
+        public IUserApi CreateUserService()
         {
-            return new MusicService(new UnitOfWork(connection));
+            return new UserService(new UnitOfWork(Connection));
+        }
+        public IAdminApi CreateAdminService()
+        {
+            return new AdminService(new UnitOfWork(Connection));
         }
     }
 }

@@ -10,7 +10,7 @@ using UTMusic.DataAccess.Entities;
 
 namespace UTMusic.DataAccess.Repositories
 {
-    public class SongRepository : IRepository<Song>
+    public class SongRepository : IRepository<Song, int>
     {
         private readonly MusicContext db;
 
@@ -26,11 +26,30 @@ namespace UTMusic.DataAccess.Repositories
 
         public IEnumerable<Song> Find(Func<Song, bool> predicate) => db.Songs.Where(predicate).ToList();
 
-        public void Delete(int id)
+        public void DeleteById(int id)
         {
-            Song song = db.Songs.Find(id);
+            Song song = Get(id);
             if (song != null)
+            {
+                foreach (var idNumber in db.IdNumbers)
+                {
+                    if (idNumber.SongId == id)
+                        db.IdNumbers.Remove(idNumber);
+                }
                 db.Songs.Remove(song);
+            }
+        }
+        public void Delete(Song song)
+        {
+            if (song != null)
+            {
+                foreach (var idNumber in db.IdNumbers)
+                {
+                    if (idNumber.SongId == song.Id)
+                        db.IdNumbers.Remove(idNumber);
+                }
+                db.Songs.Remove(song);
+            }
         }
     }
 }

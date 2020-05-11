@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UTMusic.DataAccess.EFContexts;
 using UTMusic.DataAccess.Entities;
-using UTMusic.DataAccess.Identity;
 using UTMusic.DataAccess.Interfaces;
 
 namespace UTMusic.DataAccess.Repositories
@@ -14,17 +14,19 @@ namespace UTMusic.DataAccess.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly MusicContext db;
-        public IRepository<Song> Songs { get; }
-        public IRepository<ClientProfile> ClientProfiles { get; }
-        public ApplicationUserManager UserManager { get; }
-        public ApplicationRoleManager RoleManager { get; }
+        public IRepository<Song, int> Songs { get; }
+        public IRepository<ClientProfile, string> ClientProfiles { get; }
+        public IRepository<IdNumber, int> IdNumbers { get; }
+        public UserManager<ApplicationUser> UserManager { get; }
+        public RoleManager<IdentityRole> RoleManager { get; }
         public UnitOfWork(string connectionString)
         {
             db = new MusicContext(connectionString);
             Songs = new SongRepository(db);
-            UserManager = new ApplicationUserManager(new UserStore<ApplicationUser>(db));
-            RoleManager = new ApplicationRoleManager(new RoleStore<ApplicationRole>(db));
-            ClientProfiles = new ClientManager(db);
+            UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+            ClientProfiles = new ClientRepository(db);
+            IdNumbers = new IdNumberRepository(db);
         }
         public void Save()
         {

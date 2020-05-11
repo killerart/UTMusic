@@ -9,14 +9,15 @@ using System.Web.Mvc;
 using System.Web.Security;
 using UTMusic.BusinessLogic.DataTransfer;
 using UTMusic.BusinessLogic.Interfaces;
+using UTMusic.Web.Attributes;
 using UTMusic.Web.Models;
 
 namespace UTMusic.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        private IMusicService MusicService { get; }
-        public HomeController(IMusicService musicService)
+        private IMusicApi MusicService { get; }
+        public HomeController(IMusicApi musicService)
         {
             MusicService = musicService;
         }
@@ -60,22 +61,26 @@ namespace UTMusic.Web.Controllers
         {
 
             var currentUser = LoggedUser;
-            if (MusicService.SaveSongToDisk(file, Server.MapPath("~/Music"), out SongDTO songDTO))
-                    if (currentUser != null)
-                    {
-                        UserService.AddNewSong(ref currentUser, songDTO);
-                    }
-                    else
-                    {
-                        MusicService.AddSong(songDTO);
-                    }
+            SongDTO songDTO = null;
+            var result = MusicService.SaveSongToDisk(file, Server.MapPath("~/Music"), out songDTO);
+            if (result.Succedeed)
+            {
+                if (currentUser != null)
+                {
+                    UserService.AddNewSong(currentUser, songDTO);
+                }
+                else
+                {
+                    MusicService.AddSong(songDTO);
+                }
+            }
             return SearchSong(TempData["searchValue"] as string);
         }
         [Authorize]
         public ActionResult AddSong(int songId)
         {
             var currentUser = LoggedUser;
-            UserService.AddExistingSong(ref currentUser, songId);
+            UserService.AddExistingSong(currentUser, songId);
             return SearchSong(TempData["searchValue"] as string);
         }
         /// <summary>
@@ -87,18 +92,14 @@ namespace UTMusic.Web.Controllers
         public ActionResult RemoveSong(int songId)
         {
             var currentUser = LoggedUser;
-            UserService.RemoveSong(ref currentUser, songId);
+            UserService.RemoveSong(currentUser, songId);
             return SearchSong(TempData["searchValue"] as string);
         }
-        [Authorize]
+        [MyAuthorize(Roles = "admin")]
         public ActionResult DeleteSong(int songId)
         {
-            if (LoggedUser.Role == "admin")
-            {
-                MusicService.RemoveSong(songId, Server.MapPath("~/Music"));
-                return SearchSong(TempData["searchValue"] as string);
-            }
-            return RedirectToAction("Index");
+            AdminService.RemoveSong(songId, Server.MapPath("~/Music"));
+            return SearchSong(TempData["searchValue"] as string);
         }
     }
 }

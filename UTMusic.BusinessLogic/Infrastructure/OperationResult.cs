@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace UTMusic.BusinessLogic.Infrastructure
 {
-    public class OperationDetails
+    public class OperationResult
     {
         public bool Succedeed { get; private set; }
         public string Message { get; private set; }
         public string Property { get; private set; }
-        public OperationDetails(bool succedeed, string message, string prop)
+        public OperationResult(bool succedeed, string message, string prop)
         {
             Succedeed = succedeed;
             Message = message;

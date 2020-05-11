@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,15 @@ using UTMusic.DataAccess.Interfaces;
 
 namespace UTMusic.BusinessLogic.Services
 {
-    public class UserService : IUserService, IDisposable
+    public class UserService : Service, IUserApi
     {
-        private IUnitOfWork Database { get; set; }
-        public UserService(IUnitOfWork database) => Database = database;
-        public async Task<IEnumerable<OperationDetails>> Create(UserDTO userDTO)
+        public UserService(IUnitOfWork database) : base(database)
         {
-            List<OperationDetails> operationDetails = new List<OperationDetails>();
+        }
+
+        public async Task<IEnumerable<OperationResult>> Create(UserDTO userDTO)
+        {
+            List<OperationResult> operationResults = new List<OperationResult>();
             ApplicationUser userByMail = await Database.UserManager.FindByEmailAsync(userDTO.Email);
             ApplicationUser userByName = await Database.UserManager.FindByNameAsync(userDTO.UserName);
             if (userByMail == null && userByName == null)
@@ -27,28 +30,28 @@ namespace UTMusic.BusinessLogic.Services
                 var user = new ApplicationUser { Email = userDTO.Email, UserName = userDTO.UserName };
                 var result = await Database.UserManager.CreateAsync(user, userDTO.Password);
                 if (result.Errors.Count() > 0)
-                    operationDetails.Add(new OperationDetails(false, result.Errors.FirstOrDefault(), ""));
+                    operationResults.Add(new OperationResult(false, result.Errors.FirstOrDefault(), ""));
                 else
                 {
                     // добавляем роль
                     await Database.UserManager.AddToRoleAsync(user.Id, userDTO.Role);
                     // создаем профиль клиента
-                    ClientProfile clientProfile = new ClientProfile { Id = user.Id, UserName = user.UserName };
+                    ClientProfile clientProfile = new ClientProfile { Id = user.Id };
                     Database.ClientProfiles.Create(clientProfile);
                     await Database.SaveAsync();
-                    operationDetails.Add(new OperationDetails(true, "Registration succeded", ""));
+                    operationResults.Add(new OperationResult(true, "Registration succeded", ""));
                 }
             }
             else
             {
                 if (userByMail != null)
-                    operationDetails.Add(new OperationDetails(false, "User with such E-mail already exists", "Email"));
+                    operationResults.Add(new OperationResult(false, "User with such E-mail already exists", "Email"));
 
                 if (userByName != null)
-                    operationDetails.Add(new OperationDetails(false, "User with such Username already exists", "Username"));
+                    operationResults.Add(new OperationResult(false, "User with such Username already exists", "Username"));
 
             }
-            return operationDetails;
+            return operationResults;
         }
         public async Task<ClaimsIdentity> Authenticate(UserDTO userDTO)
         {
@@ -68,15 +71,11 @@ namespace UTMusic.BusinessLogic.Services
                 var role = await Database.RoleManager.FindByNameAsync(roleName);
                 if (role == null)
                 {
-                    role = new ApplicationRole { Name = roleName };
+                    role = new IdentityRole { Name = roleName };
                     await Database.RoleManager.CreateAsync(role);
                 }
             }
             await Create(adminDTO);
-        }
-        public void Dispose()
-        {
-            Database.Dispose();
         }
         private UserDTO UserToUserDTO(ApplicationUser user)
         {
@@ -90,42 +89,40 @@ namespace UTMusic.BusinessLogic.Services
             userDTO.Songs = user.ClientProfile.GetOrderedSongs().ConvertAll(s => new SongDTO { Id = s.Id, Name = s.Name, FileName = s.FileName });
             return userDTO;
         }
-        public void AddNewSong(ref UserDTO userDTO, SongDTO songDTO)
+        public void AddNewSong(UserDTO userDTO, SongDTO songDTO)
         {
-            var user = Database.UserManager.FindById(userDTO.Id);
+            var user = Database.ClientProfiles.Get(userDTO.Id);
             if (user != null)
             {
                 var song = new Song { Name = songDTO.Name, FileName = songDTO.FileName };
-                user.ClientProfile.Songs.Add(song);
+                user.Songs.Add(song);
                 Database.Save();
-                user.ClientProfile.OrderOfSongs.Add(new IdNumber { SongId = song.Id });
+                user.OrderOfSongs.Add(new IdNumber { SongId = song.Id });
                 Database.Save();
-                userDTO = UserToUserDTO(user);
             }
         }
-        public void AddExistingSong(ref UserDTO userDTO, int songId)
+        public void AddExistingSong(UserDTO userDTO, int songId)
         {
             var song = Database.Songs.Get(songId);
-            var user = Database.UserManager.FindById(userDTO.Id);
+            var user = Database.ClientProfiles.Get(userDTO.Id);
             if (song != null && user != null)
             {
-                user.ClientProfile.Songs.Add(song);
-                user.ClientProfile.OrderOfSongs.Add(new IdNumber { SongId = songId });
+                user.Songs.Add(song);
+                user.OrderOfSongs.Add(new IdNumber { SongId = songId });
                 Database.Save();
-                userDTO = UserToUserDTO(user);
             }
         }
-        public void RemoveSong(ref UserDTO userDTO, int songId)
+        public void RemoveSong(UserDTO userDTO, int songId)
         {
-            var user = Database.UserManager.FindById(userDTO.Id);
-            var song = user.ClientProfile.Songs.FirstOrDefault(s => s.Id == songId);
+            var user = Database.ClientProfiles.Get(userDTO.Id);
+            var song = user.Songs.FirstOrDefault(s => s.Id == songId);
             if (song != null && user != null)
             {
-                user.ClientProfile.Songs.Remove(song);
-                IdNumber idNumber = user.ClientProfile.OrderOfSongs.FirstOrDefault(i => i.SongId == songId);
-                user.ClientProfile.OrderOfSongs.Remove(idNumber);
+                user.Songs.Remove(song);
+                IdNumber idNumber = user.OrderOfSongs.FirstOrDefault(i => i.SongId == songId);
+                user.OrderOfSongs.Remove(idNumber);
+                Database.IdNumbers.Delete(idNumber);
                 Database.Save();
-                userDTO = UserToUserDTO(user);
             }
         }
         public UserDTO GetUser(string name)
