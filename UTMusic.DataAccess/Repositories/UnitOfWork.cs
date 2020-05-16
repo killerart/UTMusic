@@ -15,7 +15,7 @@ namespace UTMusic.DataAccess.Repositories
     {
         private readonly MusicContext db;
         public IRepository<Song, int> Songs { get; }
-        public IRepository<ClientProfile, string> ClientProfiles { get; }
+        public IRepository<UserProfile, string> UserProfiles { get; }
         public IRepository<IdNumber, int> IdNumbers { get; }
         public UserManager<ApplicationUser> UserManager { get; }
         public RoleManager<IdentityRole> RoleManager { get; }
@@ -25,7 +25,7 @@ namespace UTMusic.DataAccess.Repositories
             Songs = new SongRepository(db);
             UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
             RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
-            ClientProfiles = new ClientRepository(db);
+            UserProfiles = new UserProfileRepository(db);
             IdNumbers = new IdNumberRepository(db);
         }
         public void Save()

@@ -7,7 +7,7 @@ using System.Web;
 
 namespace UTMusic.DataAccess.Entities
 {
-    public class ClientProfile
+    public class UserProfile
     {
         [Key]
         [ForeignKey("ApplicationUser")]
@@ -15,7 +15,7 @@ namespace UTMusic.DataAccess.Entities
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<Song> Songs { get; set; }
         public virtual ICollection<IdNumber> OrderOfSongs { get; set; }
-        public ClientProfile()
+        public UserProfile()
         {
             Songs = new List<Song>();
             OrderOfSongs = new List<IdNumber>();

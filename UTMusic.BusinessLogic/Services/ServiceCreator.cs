@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UTMusic.BusinessLogic.Interfaces;
 using UTMusic.BusinessLogic.Services;
+using UTMusic.DataAccess.Interfaces;
 using UTMusic.DataAccess.Repositories;
 
-namespace UTMusic.BusinessLogic.Interfaces
+namespace UTMusic.BusinessLogic.Services
 {
     public class ServiceCreator : IServiceCreator
     {

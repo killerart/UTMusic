@@ -11,31 +11,31 @@ using UTMusic.DataAccess.Interfaces;
 
 namespace UTMusic.DataAccess.Repositories
 {
-    public class ClientRepository : IRepository<ClientProfile, string>
+    public class UserProfileRepository : IRepository<UserProfile, string>
     {
         private MusicContext db { get; }
-        public ClientRepository(MusicContext db)
+        public UserProfileRepository(MusicContext db)
         {
             this.db = db;
         }
-        public void Create(ClientProfile item)
+        public void Create(UserProfile item)
         {
-            db.ClientProfiles.Add(item);
+            db.UserProfiles.Add(item);
             db.SaveChanges();
         }
-        public IEnumerable<ClientProfile> GetAll()
+        public IEnumerable<UserProfile> GetAll()
         {
-            return db.ClientProfiles.ToList();
+            return db.UserProfiles.ToList();
         }
-        public ClientProfile Get(string id)
+        public UserProfile Get(string id)
         {
-            return db.ClientProfiles.Find(id);
+            return db.UserProfiles.Find(id);
         }
-        public IEnumerable<ClientProfile> Find(Func<ClientProfile, bool> predicate)
+        public IEnumerable<UserProfile> Find(Func<UserProfile, bool> predicate)
         {
-            return db.ClientProfiles.Where(predicate).ToList();
+            return db.UserProfiles.Where(predicate).ToList();
         }
-        public void Update(ClientProfile item)
+        public void Update(UserProfile item)
         {
             db.Entry(item).State = EntityState.Modified;
         }
@@ -44,7 +44,7 @@ namespace UTMusic.DataAccess.Repositories
             var clientProfile = Get(id);
             Delete(clientProfile);
         }
-        public void Delete(ClientProfile clientProfile)
+        public void Delete(UserProfile clientProfile)
         {
             if (clientProfile != null)
             {
@@ -52,7 +52,7 @@ namespace UTMusic.DataAccess.Repositories
                 {
                     db.IdNumbers.Remove(idNumber);
                 }
-                db.ClientProfiles.Remove(clientProfile);
+                db.UserProfiles.Remove(clientProfile);
             }
         }
     }

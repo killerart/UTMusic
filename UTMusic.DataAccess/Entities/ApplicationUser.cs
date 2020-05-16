@@ -9,6 +9,6 @@ namespace UTMusic.DataAccess.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-        public virtual ClientProfile ClientProfile { get; set; }
+        public virtual UserProfile ClientProfile { get; set; }
     }
 }

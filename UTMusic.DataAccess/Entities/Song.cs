@@ -10,10 +10,10 @@ namespace UTMusic.DataAccess.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string FileName { get; set; }
-        public virtual ICollection<ClientProfile> Users { get; set; }
+        public virtual ICollection<UserProfile> Users { get; set; }
         public Song()
         {
-            Users = new HashSet<ClientProfile>();
+            Users = new HashSet<UserProfile>();
         }
     }
 }

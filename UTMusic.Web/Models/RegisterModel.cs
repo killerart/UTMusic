@@ -9,6 +9,7 @@ namespace UTMusic.Web.Models
     public class RegisterModel : HeaderModel
     {
         [Required]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         [Required]
         public string UserName { get; set; }

@@ -36,8 +36,8 @@ namespace UTMusic.BusinessLogic.Services
                     // добавляем роль
                     await Database.UserManager.AddToRoleAsync(user.Id, userDTO.Role);
                     // создаем профиль клиента
-                    ClientProfile clientProfile = new ClientProfile { Id = user.Id };
-                    Database.ClientProfiles.Create(clientProfile);
+                    UserProfile userProfile = new UserProfile { Id = user.Id };
+                    Database.UserProfiles.Create(userProfile);
                     await Database.SaveAsync();
                     operationResults.Add(new OperationResult(true, "Registration succeded", ""));
                 }
@@ -91,7 +91,7 @@ namespace UTMusic.BusinessLogic.Services
         }
         public void AddNewSong(UserDTO userDTO, SongDTO songDTO)
         {
-            var user = Database.ClientProfiles.Get(userDTO.Id);
+            var user = Database.UserProfiles.Get(userDTO.Id);
             if (user != null)
             {
                 var song = new Song { Name = songDTO.Name, FileName = songDTO.FileName };
@@ -104,7 +104,7 @@ namespace UTMusic.BusinessLogic.Services
         public void AddExistingSong(UserDTO userDTO, int songId)
         {
             var song = Database.Songs.Get(songId);
-            var user = Database.ClientProfiles.Get(userDTO.Id);
+            var user = Database.UserProfiles.Get(userDTO.Id);
             if (song != null && user != null)
             {
                 user.Songs.Add(song);
@@ -114,7 +114,7 @@ namespace UTMusic.BusinessLogic.Services
         }
         public void RemoveSong(UserDTO userDTO, int songId)
         {
-            var user = Database.ClientProfiles.Get(userDTO.Id);
+            var user = Database.UserProfiles.Get(userDTO.Id);
             var song = user.Songs.FirstOrDefault(s => s.Id == songId);
             if (song != null && user != null)
             {
