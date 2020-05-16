@@ -13,7 +13,6 @@ namespace UTMusic.Web.Attributes
     public class MyAuthorizeAttribute : AuthorizeAttribute
     {
         private string[] allowedRoles = new string[] { };
-
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             if (!String.IsNullOrEmpty(base.Roles))

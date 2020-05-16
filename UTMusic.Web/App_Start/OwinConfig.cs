@@ -10,7 +10,6 @@ using UTMusic.BusinessLogic.Interfaces;
 using UTMusic.BusinessLogic.Services;
 
 [assembly: OwinStartup(typeof(UTMusic.Web.OwinConfig))]
-
 namespace UTMusic.Web
 {
     public class OwinConfig
