@@ -66,8 +66,8 @@
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\UserProfileRepository.cs" />
     <Compile Include="Repositories\IdNumberRepository.cs" />
+    <Compile Include="Repositories\UserProfileRepository.cs" />
     <Compile Include="Repositories\UnitOfWork.cs" />
     <Compile Include="Repositories\SongRepository.cs" />
   </ItemGroup>

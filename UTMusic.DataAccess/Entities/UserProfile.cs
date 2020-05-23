@@ -25,7 +25,7 @@ namespace UTMusic.DataAccess.Entities
             var orderedSongs = new List<Song>();
             for (int i = OrderOfSongs.Count - 1; i >= 0; --i)
             {
-                var song = Songs.FirstOrDefault(s => s.Id == OrderOfSongs.ElementAt(i).SongId);
+                var song = Songs.FirstOrDefault(s => s.Id == OrderOfSongs.ElementAt(i).Song.Id);
                 if (song != null)
                     orderedSongs.Add(song);
             }

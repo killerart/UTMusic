@@ -88,7 +88,7 @@ namespace UTMusic.Web.Controllers
                     Role = "user"
                 };
                 var registerResults = await UserService.Create(userDTO);
-                if (registerResults.All(r => r.Succedeed))
+                if (registerResults.All(r => r.Succeeded))
                     return RedirectToAction("Login");
                 else
                     foreach (var result in registerResults)

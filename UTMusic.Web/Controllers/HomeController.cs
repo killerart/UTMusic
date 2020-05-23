@@ -1,12 +1,5 @@
-﻿using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
+﻿using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 using UTMusic.BusinessLogic.DataTransfer;
 using UTMusic.BusinessLogic.Interfaces;
 using UTMusic.Web.Attributes;
@@ -63,7 +56,7 @@ namespace UTMusic.Web.Controllers
             var currentUser = LoggedUser;
             SongDTO songDTO = null;
             var result = MusicService.SaveSongToDisk(file, Server.MapPath("~/Music"), out songDTO);
-            if (result.Succedeed)
+            if (result.Succeeded)
             {
                 if (currentUser != null)
                 {

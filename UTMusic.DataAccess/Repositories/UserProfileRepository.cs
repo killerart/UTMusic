@@ -48,10 +48,7 @@ namespace UTMusic.DataAccess.Repositories
         {
             if (clientProfile != null)
             {
-                foreach (var idNumber in clientProfile.OrderOfSongs)
-                {
-                    db.IdNumbers.Remove(idNumber);
-                }
+                db.IdNumbers.RemoveRange(clientProfile.OrderOfSongs);
                 db.UserProfiles.Remove(clientProfile);
             }
         }

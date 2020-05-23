@@ -9,7 +9,7 @@ namespace UTMusic.BusinessLogic.Services
 {
     public abstract class Service : IDisposable
     {
-        protected IUnitOfWork Database { get; set; }
+        protected IUnitOfWork Database { get; }
         public Service(IUnitOfWork database) => Database = database;
         public void Dispose()
         {

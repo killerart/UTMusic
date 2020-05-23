@@ -29,25 +29,14 @@ namespace UTMusic.DataAccess.Repositories
         public void DeleteById(int id)
         {
             Song song = Get(id);
-            if (song != null)
-            {
-                foreach (var idNumber in db.IdNumbers)
-                {
-                    if (idNumber.SongId == id)
-                        db.IdNumbers.Remove(idNumber);
-                }
-                db.Songs.Remove(song);
-            }
+            Delete(song);
         }
         public void Delete(Song song)
         {
             if (song != null)
             {
-                foreach (var idNumber in db.IdNumbers)
-                {
-                    if (idNumber.SongId == song.Id)
-                        db.IdNumbers.Remove(idNumber);
-                }
+                var idNumbers = db.IdNumbers.Where(i => i.Song.Id == song.Id);
+                db.IdNumbers.RemoveRange(idNumbers);
                 db.Songs.Remove(song);
             }
         }

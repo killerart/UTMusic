@@ -97,7 +97,7 @@ namespace UTMusic.BusinessLogic.Services
                 var song = new Song { Name = songDTO.Name, FileName = songDTO.FileName };
                 user.Songs.Add(song);
                 Database.Save();
-                user.OrderOfSongs.Add(new IdNumber { SongId = song.Id });
+                user.OrderOfSongs.Add(new IdNumber { Song = song });
                 Database.Save();
             }
         }
@@ -108,7 +108,7 @@ namespace UTMusic.BusinessLogic.Services
             if (song != null && user != null)
             {
                 user.Songs.Add(song);
-                user.OrderOfSongs.Add(new IdNumber { SongId = songId });
+                user.OrderOfSongs.Add(new IdNumber { Song = song });
                 Database.Save();
             }
         }
@@ -119,9 +119,8 @@ namespace UTMusic.BusinessLogic.Services
             if (song != null && user != null)
             {
                 user.Songs.Remove(song);
-                IdNumber idNumber = user.OrderOfSongs.FirstOrDefault(i => i.SongId == songId);
-                user.OrderOfSongs.Remove(idNumber);
-                Database.IdNumbers.Delete(idNumber);
+                var idNumber = user.OrderOfSongs.FirstOrDefault(i => i.Song == song);
+                Database.IdNumbers.DeleteById(idNumber.Id);
                 Database.Save();
             }
         }
