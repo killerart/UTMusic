@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UTMusic.DataAccess.EFContexts;
 using UTMusic.DataAccess.Entities;
+using UTMusic.DataAccess.Identity;
 using UTMusic.DataAccess.Interfaces;
 
 namespace UTMusic.DataAccess.Repositories
@@ -17,13 +18,13 @@ namespace UTMusic.DataAccess.Repositories
         public IRepository<Song, int> Songs { get; }
         public IRepository<UserProfile, string> UserProfiles { get; }
         public IRepository<IdNumber, int> IdNumbers { get; }
-        public UserManager<ApplicationUser> UserManager { get; }
+        public ApplicationUserManager UserManager { get; }
         public RoleManager<IdentityRole> RoleManager { get; }
         public UnitOfWork(string connectionString)
         {
             db = new MusicContext(connectionString);
             Songs = new SongRepository(db);
-            UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            UserManager = new ApplicationUserManager(new UserStore<ApplicationUser>(db));
             RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
             UserProfiles = new UserProfileRepository(db);
             IdNumbers = new IdNumberRepository(db);

@@ -47,7 +47,6 @@ namespace UTMusic.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginModel loginModel)
         {
-            await SetInitialDataAsync();
             if (ModelState.IsValid)
             {
                 var userDTO = new UserDTO { UserName = loginModel.Username, Password = loginModel.Password };
@@ -61,7 +60,7 @@ namespace UTMusic.Web.Controllers
                     }, claim);
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("", "Incorrect login data");
+                ModelState.AddModelError("", "Incorrect login data or you didn't confirm your Email");
             }
             return View(loginModel);
         }
@@ -77,7 +76,6 @@ namespace UTMusic.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterModel registerModel)
         {
-            await SetInitialDataAsync();
             if (ModelState.IsValid)
             {
                 var userDTO = new UserDTO
@@ -87,15 +85,26 @@ namespace UTMusic.Web.Controllers
                     Password = registerModel.Password,
                     Role = "user"
                 };
-                var registerResults = await UserService.Create(userDTO);
+                var registerResults = await UserService.Create(userDTO, Request, Url);
                 if (registerResults.All(r => r.Succeeded))
-                    return RedirectToAction("Login");
+                    return View("DisplayEmail");
                 else
                     foreach (var result in registerResults)
                         ModelState.AddModelError(result.Property, result.Message);
             }
             return View(registerModel);
         }
+
+        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        {
+            var result = await UserService.ConfirmEmail(userId, code);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login");
+            }
+            return View("Error");
+        }
+
         /// <summary>
         /// Действие выхода из аккаунта
         /// </summary>
@@ -105,16 +114,6 @@ namespace UTMusic.Web.Controllers
         {
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
-        }
-        private async Task SetInitialDataAsync()
-        {
-            await UserService.SetInitialData(new UserDTO
-            {
-                Email = "somemail@mail.ru",
-                UserName = "admin",
-                Password = "admin12345",
-                Role = "admin" ,
-            }, new List<string> { "user", "admin" });
         }
     }
 }

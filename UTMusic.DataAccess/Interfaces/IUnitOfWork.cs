@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UTMusic.DataAccess.Entities;
+using UTMusic.DataAccess.Identity;
 
 namespace UTMusic.DataAccess.Interfaces
 {
@@ -14,7 +15,7 @@ namespace UTMusic.DataAccess.Interfaces
         IRepository<Song, int> Songs { get; }
         IRepository<UserProfile, string> UserProfiles { get; }
         IRepository<IdNumber, int> IdNumbers { get; }
-        UserManager<ApplicationUser> UserManager { get; }
+        ApplicationUserManager UserManager { get; }
         RoleManager<IdentityRole> RoleManager { get; }
         void Save();
         Task SaveAsync();

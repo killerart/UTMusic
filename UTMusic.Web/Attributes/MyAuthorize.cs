@@ -15,7 +15,7 @@ namespace UTMusic.Web.Attributes
         private string[] allowedRoles = new string[] { };
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            if (!String.IsNullOrEmpty(base.Roles))
+            if (!string.IsNullOrEmpty(base.Roles))
             {
                 allowedRoles = base.Roles.Split(new char[] { ',' });
                 for (int i = 0; i < allowedRoles.Length; i++)
