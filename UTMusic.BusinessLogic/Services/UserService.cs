@@ -1,8 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Ninject.Activation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 using UTMusic.BusinessLogic.DataTransfer;
 using UTMusic.BusinessLogic.Infrastructure;
 using UTMusic.BusinessLogic.Interfaces;
@@ -11,101 +17,129 @@ using UTMusic.DataAccess.Interfaces;
 
 namespace UTMusic.BusinessLogic.Services
 {
-    public class UserService : IUserService, IDisposable
+    public class UserService : Service, IUserApi
     {
-        private IUnitOfWork Database { get; set; }
-        public UserService(IUnitOfWork database) => Database = database;
-        public OperationResult Authenticate(UserDTO userDTO)
+        public UserService(IUnitOfWork database) : base(database)
         {
-            User user = Database.Users.Find(u => u.Email == userDTO.Email && u.Password == userDTO.Password).FirstOrDefault();
-            if (user != null)
-            {
-                return new OperationResult(true, user.Id.ToString(), "");
-            }
-            return new OperationResult(false, "Incorrect login data", "");
         }
-        private UserDTO UserToUserDTO(User user)
+
+        public async Task<IEnumerable<OperationResult>> Create(UserDTO userDTO, HttpRequestBase request, UrlHelper url)
+        {
+            List<OperationResult> operationResults = new List<OperationResult>();
+            ApplicationUser userByMail = await Database.UserManager.FindByEmailAsync(userDTO.Email);
+            ApplicationUser userByName =  await Database.UserManager.FindByNameAsync(userDTO.UserName);
+            if (userByMail == null && userByName == null)
+            {
+                var user = new ApplicationUser { Email = userDTO.Email, UserName = userDTO.UserName };
+                var result = await Database.UserManager.CreateAsync(user, userDTO.Password);
+                if (result.Succeeded)
+                {
+                    // добавляем роль
+                    await Database.UserManager.AddToRoleAsync(user.Id, userDTO.Role);
+                    // создаем профиль клиента
+                    UserProfile userProfile = new UserProfile { Id = user.Id };
+                    Database.UserProfiles.Create(userProfile);
+                    Database.Save();
+                    // генерируем токен для подтверждения регистрации
+                    var code = await Database.UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // создаем ссылку для подтверждения
+                    var callbackUrl = url.Action("ConfirmEmail", "Account", new { userId = user.Id, code },
+                               protocol: request.Url.Scheme);
+                    // отправка письма
+                    await Database.UserManager.SendEmailAsync(user.Id, "Confirm e-mail",
+                               "Hello, " + user.UserName + ". Follow this link to complete the registration: <a href=\""
+                                                               + callbackUrl + "\">Confirm E-mail</a>");
+                    operationResults.Add(new OperationResult(true, "Registration succeded", ""));
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        operationResults.Add(new OperationResult(false, error, ""));
+                    }
+                }
+            }
+            else
+            {
+                if (userByMail != null)
+                    operationResults.Add(new OperationResult(false, "User with such E-mail already exists", "Email"));
+                if (userByName != null)
+                    operationResults.Add(new OperationResult(false, "User with such Username already exists", "Username"));
+            }
+            return operationResults;
+        }
+        public async Task<ClaimsIdentity> Authenticate(UserDTO userDTO)
+        {
+            ClaimsIdentity claim = null;
+            // находим пользователя
+            ApplicationUser user = await Database.UserManager.FindAsync(userDTO.UserName, userDTO.Password);
+            // авторизуем его и возвращаем объект ClaimsIdentity
+            if (user != null && user.EmailConfirmed)
+            {
+                    claim = await Database.UserManager.CreateIdentityAsync(user,
+                                                DefaultAuthenticationTypes.ApplicationCookie);
+            }
+            return claim;
+        }
+
+        public async Task<OperationResult> ConfirmEmail(string userId, string code)
+        {
+            var result = await Database.UserManager.ConfirmEmailAsync(userId, code);
+            return new OperationResult(result.Succeeded, result.Errors.FirstOrDefault(), "");
+        }
+
+        private UserDTO UserToUserDTO(ApplicationUser user)
         {
             if (user == null)
                 return null;
-            var userDTO = new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Password = user.Password };
-            userDTO.Songs = user.GetOrderedSongs().ConvertAll(s => new SongDTO { Id = s.Id, Name = s.Name, FileName = s.FileName });
+            var userDTO = new UserDTO
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                Role = Database.UserManager.GetRoles(user.Id).FirstOrDefault()
+            };
+            userDTO.Songs = user.ClientProfile.GetOrderedSongs().ConvertAll(s => new SongDTO { Id = s.Id, Name = s.Name, FileName = s.FileName });
             return userDTO;
         }
-        public UserDTO GetUser(int id)
+        public void AddNewSong(UserDTO userDTO, SongDTO songDTO)
         {
-            var user = Database.Users.Get(id);
-            return UserToUserDTO(user);
-        }
-        public void AddNewSong(ref UserDTO userDTO, SongDTO songDTO)
-        {
-            var user = Database.Users.Get(userDTO.Id);
+            var user = Database.UserProfiles.Get(userDTO.Id);
             if (user != null)
             {
                 var song = new Song { Name = songDTO.Name, FileName = songDTO.FileName };
                 user.Songs.Add(song);
                 Database.Save();
-                user.OrderOfSongs.Add(new IdNumber { SongId = song.Id });
+                user.OrderOfSongs.Add(new IdNumber { Song = song });
                 Database.Save();
-                userDTO = UserToUserDTO(user);
             }
         }
-        public void AddExistingSong(ref UserDTO userDTO, int songId)
+        public void AddExistingSong(UserDTO userDTO, int songId)
         {
             var song = Database.Songs.Get(songId);
-            var user = Database.Users.Get(userDTO.Id);
+            var user = Database.UserProfiles.Get(userDTO.Id);
             if (song != null && user != null)
             {
                 user.Songs.Add(song);
-                user.OrderOfSongs.Add(new IdNumber { SongId = songId });
+                user.OrderOfSongs.Add(new IdNumber { Song = song });
                 Database.Save();
-                userDTO = UserToUserDTO(user);
             }
         }
-        public void DeleteSong(ref UserDTO userDTO, int songId)
+        public void RemoveSong(UserDTO userDTO, int songId)
         {
-            var user = Database.Users.Get(userDTO.Id);
+            var user = Database.UserProfiles.Get(userDTO.Id);
             var song = user.Songs.FirstOrDefault(s => s.Id == songId);
             if (song != null && user != null)
             {
                 user.Songs.Remove(song);
-                IdNumber idNumber = user.OrderOfSongs.FirstOrDefault(i => i.SongId == songId);
-                user.OrderOfSongs.Remove(idNumber);
+                var idNumber = user.OrderOfSongs.FirstOrDefault(i => i.Song == song);
+                Database.IdNumbers.DeleteById(idNumber.Id);
                 Database.Save();
-                userDTO = UserToUserDTO(user);
             }
         }
-        public IEnumerable<OperationResult> Create(UserDTO userDTO)
+        public UserDTO GetUser(string name)
         {
-            var registerResults = new List<OperationResult>();
-            User userByEmail = Database.Users.Find(u => u.Email == userDTO.Email).FirstOrDefault();
-            User userByName = Database.Users.Find(u => u.Name == userDTO.Name).FirstOrDefault();
-            if (userByEmail == null && userByName == null)
-            {
-                Database.Users.Create(
-                    new User
-                    {
-                        Email = userDTO.Email,
-                        Name = userDTO.Name,
-                        Password = userDTO.Password
-                    }
-                );
-                Database.Save();
-                registerResults.Add(new OperationResult(true, "", ""));
-            }
-            else
-            {
-                if (userByEmail != null)
-                {
-                    registerResults.Add(new OperationResult(false, "User with such E-Mail already exists", "Email"));
-                }
-                if (userByName != null)
-                {
-                    registerResults.Add(new OperationResult(false, "User with such Name already exists", "Name"));
-                }
-            }
-            return registerResults;
+            return UserToUserDTO(Database.UserManager.FindByName(name));
         }
-        public void Dispose() => Database.Dispose();
     }
 }

@@ -1,31 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
+﻿using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 using UTMusic.BusinessLogic.DataTransfer;
 using UTMusic.BusinessLogic.Interfaces;
+using UTMusic.Web.Attributes;
 using UTMusic.Web.Models;
 
 namespace UTMusic.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private IUserService UserService { get; }
-        private IMusicService MusicService { get; }
-        public HomeController(IUserService userService, IMusicService musicService)
+        private IMusicApi MusicService { get; }
+        public HomeController(IMusicApi musicService)
         {
-            UserService = userService;
             MusicService = musicService;
-        }
-        private UserDTO LoggedUser {
-            get {
-                Int32.TryParse(User.Identity.Name, out int id);
-                var userDTO = UserService.GetUser(id);
-                return userDTO;
-            }
         }
         /// <summary>
         /// Действие главной страницы
@@ -35,11 +22,6 @@ namespace UTMusic.Web.Controllers
         public ActionResult Index()
         {
             var currentUser = LoggedUser;
-            if (currentUser == null && User.Identity.IsAuthenticated)
-            {
-                FormsAuthentication.SignOut();
-                return RedirectToAction("Index");
-            }
             var model = new SongListModel
             {
                 CurrentUser = currentUser,
@@ -70,34 +52,19 @@ namespace UTMusic.Web.Controllers
         [HttpPost]
         public ActionResult UploadSong(HttpPostedFileBase file)
         {
-            var currentUser = LoggedUser;
-            if (file != null)
-            {
-                var extention = Path.GetExtension(file.FileName);
-                if (extention == ".mp3")
-                {
-                    var songName = Path.GetFileNameWithoutExtension(file.FileName);
-                    var fileName = songName;
-                    if (MusicService.FileExists(fileName))
-                    {
-                        fileName += "1";
-                    }
-                    var directoryPath = Server.MapPath("~/Music");
-                    if (!Directory.Exists(directoryPath))
-                        Directory.CreateDirectory(directoryPath);
-                    var fileSavePath = directoryPath + "/" +
-                      fileName + extention;
-                    file.SaveAs(fileSavePath);
 
-                    var songDTO = new SongDTO { Name = songName, FileName = fileName };
-                    if (currentUser != null)
-                    {
-                        UserService.AddNewSong(ref currentUser, songDTO);
-                    }
-                    else
-                    {
-                        MusicService.AddSong(songDTO);
-                    }
+            var currentUser = LoggedUser;
+            SongDTO songDTO = null;
+            var result = MusicService.SaveSongToDisk(file, Server.MapPath("~/Music"), out songDTO);
+            if (result.Succeeded)
+            {
+                if (currentUser != null)
+                {
+                    UserService.AddNewSong(currentUser, songDTO);
+                }
+                else
+                {
+                    MusicService.AddSong(songDTO);
                 }
             }
             return SearchSong(TempData["searchValue"] as string);
@@ -106,7 +73,7 @@ namespace UTMusic.Web.Controllers
         public ActionResult AddSong(int songId)
         {
             var currentUser = LoggedUser;
-            UserService.AddExistingSong(ref currentUser, songId);
+            UserService.AddExistingSong(currentUser, songId);
             return SearchSong(TempData["searchValue"] as string);
         }
         /// <summary>
@@ -115,10 +82,16 @@ namespace UTMusic.Web.Controllers
         /// <param name="songId">Id песни, которую надо удалить</param>
         /// <returns>Главна страница</returns>
         [Authorize]
-        public ActionResult DeleteSong(int songId)
+        public ActionResult RemoveSong(int songId)
         {
             var currentUser = LoggedUser;
-            UserService.DeleteSong(ref currentUser, songId);
+            UserService.RemoveSong(currentUser, songId);
+            return SearchSong(TempData["searchValue"] as string);
+        }
+        [MyAuthorize(Roles = "admin")]
+        public ActionResult DeleteSong(int songId)
+        {
+            AdminService.RemoveSong(songId, Server.MapPath("~/Music"));
             return SearchSong(TempData["searchValue"] as string);
         }
     }

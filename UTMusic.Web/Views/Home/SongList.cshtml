@@ -8,14 +8,14 @@
 			@foreach (var song in Model.UserSongs)
 			{
 				<div class="row">
-					<div class="py-3 plItem col-11" file="@song.FileName">
+					<div class="py-3 plItem col" file="@song.FileName">
 						<span class="plTitle">@song.Name</span>
 					</div>
-					<div class="py-3 float-right">
+					<div class="py-3 pr-4 float-right">
 						<span class="plAction float-right">
 							@Html.Raw(Ajax.ActionLink(
 								"LinkTextToken",
-								"DeleteSong", new { @songId = song.Id },
+								"RemoveSong", new { @songId = song.Id },
 								new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "plwrap" }
 							).ToHtmlString().Replace("LinkTextToken", "<i class=\"far fa-trash-alt text-white\"></i>"))
 						</span>
@@ -32,7 +32,7 @@
 		@foreach (var song in Model.AllSongs)
 		{
 			<div class="row">
-				<div class="py-3 plItem col-11" file="@song.FileName">
+				<div class="py-3 plItem col" file="@song.FileName">
 					<span class="plTitle">@song.Name</span>
 				</div>
 				@if (User.Identity.IsAuthenticated)
@@ -47,11 +47,23 @@
 					{
 						link = "<a><i class=\"fas fa-check text-light\"></i></a>";
 					}
-					<div class="py-3 float-right">
+					<div class="py-3 pr-4 float-right">
 						<span class="plAction float-right">
 							@Html.Raw(link)
 						</span>
 					</div>
+					if (Model.CurrentUser.Role == "admin")
+					{
+						<div class="py-3 pr-4 float-right">
+							<span class="plAction float-right">
+								@Html.Raw(Ajax.ActionLink(
+									"LinkTextToken",
+									"DeleteSong", new { @songId = song.Id },
+									new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "plwrap" }
+								).ToHtmlString().Replace("LinkTextToken", "<i class=\"far fa-trash-alt text-white\"></i>"))
+							</span>
+						</div>
+					}
 				}
 			</div>
 		}

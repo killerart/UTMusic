@@ -8,12 +8,12 @@ namespace UTMusic.BusinessLogic.Infrastructure
 {
     public class OperationResult
     {
-        public bool Succedeed { get; private set; }
+        public bool Succeeded { get; private set; }
         public string Message { get; private set; }
         public string Property { get; private set; }
-        public OperationResult(bool succedeed, string message, string prop)
+        public OperationResult(bool succeeded, string message, string prop)
         {
-            Succedeed = succedeed;
+            Succeeded = succeeded;
             Message = message;
             Property = prop;
         }

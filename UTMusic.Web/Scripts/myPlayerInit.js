@@ -65,9 +65,12 @@ jQuery(function () {
 				loadTrack(index);
 			}
 		}).get(0),
-		fileName = document.getElementsByClassName("plItem")[0].getAttribute("file"),
 		plUserList = document.getElementById('plUserList'),
-		userSongCount = plUserList != null ? plUserList.children.length : 0;
+		userSongCount = plUserList != null ? plUserList.children.length : 0,
+		song = document.getElementsByClassName("plItem")[0],
+		fileName = "";
+	if (song)
+		fileName = song.getAttribute("file");
 	$('#btnPrev').on('click', function () {
 		if (index > 0) {
 			index--;

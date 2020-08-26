@@ -9,6 +9,7 @@ namespace UTMusic.DataAccess.Entities
     public class IdNumber
     {
         public int Id { get; set; }
-        public int SongId { get; set; }
+        public virtual Song Song { get; set; }
+        public virtual UserProfile User { get; set; }
     }
 }

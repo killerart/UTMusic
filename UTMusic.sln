@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTMusic.Web", "UTMusic.Web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTMusic.BusinessLogic", "UTMusic.BusinessLogic\UTMusic.BusinessLogic.csproj", "{6460DC50-19CA-42D5-AAD4-E2CEF367F7A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTMusic.DataAccess", "UTMusic.Domain\UTMusic.DataAccess.csproj", "{0635B965-11E2-4A8B-8797-B5ACCFEDF7E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTMusic.DataAccess", "UTMusic.DataAccess\UTMusic.DataAccess.csproj", "{0635B965-11E2-4A8B-8797-B5ACCFEDF7E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
