@@ -13,31 +13,31 @@ namespace UTMusic.DataAccess.Repositories
 {
     public class UserProfileRepository : IRepository<UserProfile, string>
     {
-        private MusicContext db { get; }
+        private readonly MusicContext _db;
         public UserProfileRepository(MusicContext db)
         {
-            this.db = db;
+            _db = db;
         }
         public void Create(UserProfile item)
         {
-            db.UserProfiles.Add(item);
-            db.SaveChanges();
+            _db.UserProfiles.Add(item);
+            _db.SaveChanges();
         }
         public IEnumerable<UserProfile> GetAll()
         {
-            return db.UserProfiles.ToList();
+            return _db.UserProfiles.ToList();
         }
         public UserProfile Get(string id)
         {
-            return db.UserProfiles.Find(id);
+            return _db.UserProfiles.Find(id);
         }
         public IEnumerable<UserProfile> Find(Func<UserProfile, bool> predicate)
         {
-            return db.UserProfiles.Where(predicate).ToList();
+            return _db.UserProfiles.Where(predicate).ToList();
         }
         public void Update(UserProfile item)
         {
-            db.Entry(item).State = EntityState.Modified;
+            _db.Entry(item).State = EntityState.Modified;
         }
         public void DeleteById(string id)
         {
@@ -48,8 +48,8 @@ namespace UTMusic.DataAccess.Repositories
         {
             if (clientProfile != null)
             {
-                db.IdNumbers.RemoveRange(clientProfile.OrderOfSongs);
-                db.UserProfiles.Remove(clientProfile);
+                _db.IdNumbers.RemoveRange(clientProfile.OrderOfSongs);
+                _db.UserProfiles.Remove(clientProfile);
             }
         }
     }
