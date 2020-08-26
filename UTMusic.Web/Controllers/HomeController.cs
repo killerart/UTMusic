@@ -54,8 +54,7 @@ namespace UTMusic.Web.Controllers
         {
 
             var currentUser = LoggedUser;
-            SongDTO songDTO = null;
-            var result = MusicService.SaveSongToDisk(file, Server.MapPath("~/Music"), out songDTO);
+            var result = MusicService.SaveSongToDisk(file, Server.MapPath("~/Music"), out SongDTO songDTO);
             if (result.Succeeded)
             {
                 if (currentUser != null)

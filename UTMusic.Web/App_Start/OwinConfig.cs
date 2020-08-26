@@ -14,11 +14,11 @@ namespace UTMusic.Web
 {
     public class OwinConfig
     {
-        IServiceCreator serviceCreator = new ServiceCreator("MusicContext");
+        private readonly IServiceCreator _serviceCreator = new ServiceCreator("MusicContext");
         public void Configuration(IAppBuilder app)
         {
-            app.CreatePerOwinContext(serviceCreator.CreateUserService);
-            app.CreatePerOwinContext(serviceCreator.CreateAdminService);
+            app.CreatePerOwinContext(_serviceCreator.CreateUserService);
+            app.CreatePerOwinContext(_serviceCreator.CreateAdminService);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,

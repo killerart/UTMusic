@@ -10,31 +10,31 @@ namespace UTMusic.DataAccess.Repositories
 {
     internal class IdNumberRepository : IRepository<IdNumber, int>
     {
-        private MusicContext db { get; }
+        private readonly MusicContext _db;
         public IdNumberRepository(MusicContext db)
         {
-            this.db = db;
+            this._db = db;
         }
         public void Create(IdNumber item)
         {
-            db.IdNumbers.Add(item);
-            db.SaveChanges();
+            _db.IdNumbers.Add(item);
+            _db.SaveChanges();
         }
         public IEnumerable<IdNumber> GetAll()
         {
-            return db.IdNumbers.ToList();
+            return _db.IdNumbers.ToList();
         }
         public IdNumber Get(int id)
         {
-            return db.IdNumbers.Find(id);
+            return _db.IdNumbers.Find(id);
         }
         public IEnumerable<IdNumber> Find(Func<IdNumber, bool> predicate)
         {
-            return db.IdNumbers.Where(predicate).ToList();
+            return _db.IdNumbers.Where(predicate).ToList();
         }
         public void Update(IdNumber item)
         {
-            db.Entry(item).State = EntityState.Modified;
+            _db.Entry(item).State = EntityState.Modified;
         }
         public void DeleteById(int id)
         {
@@ -45,7 +45,7 @@ namespace UTMusic.DataAccess.Repositories
         {
             if (idNumber != null)
             {
-                db.IdNumbers.Remove(idNumber);
+                _db.IdNumbers.Remove(idNumber);
             }
         }
     }
