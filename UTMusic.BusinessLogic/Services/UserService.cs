@@ -47,7 +47,7 @@ namespace UTMusic.BusinessLogic.Services
                                protocol: request.Url.Scheme);
                     // отправка письма
                     await Database.UserManager.SendEmailAsync(user.Id, "Confirm e-mail",
-                               "Follow this link to complete the registration: <a href=\""
+                               "Hello, " + user.UserName + ". Follow this link to complete the registration: <a href=\""
                                                                + callbackUrl + "\">Confirm E-mail</a>");
                     operationResults.Add(new OperationResult(true, "Registration succeded", ""));
                 }
